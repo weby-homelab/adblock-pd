@@ -52,9 +52,9 @@ flowchart TD
     %% Components
     subgraph Clients ["📱 Ваші пристрої"]
         direction LR
-        C1("💻 Ноутбуки / ПК") ::: client
-        C2("📱 Смартфони") ::: client
-        C3("📺 Smart TV / IoT") ::: client
+        C1("💻 Ноутбуки / ПК"):::client
+        C2("📱 Смартфони"):::client
+        C3("📺 Smart TV / IoT"):::client
     end
 
     subgraph Docker ["🐳 Docker Середовище (debian:bullseye-slim)"]
