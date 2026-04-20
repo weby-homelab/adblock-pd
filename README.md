@@ -39,54 +39,75 @@
 ### 🏗️ Архітектура (Architecture)
 
 ```mermaid
-graph TD
+flowchart TD
     %% Styling
     classDef client fill:#0072ff,stroke:#00d4ff,stroke-width:2px,color:#fff,font-weight:bold,rx:10,ry:10;
     classDef server fill:#1a1a2e,stroke:#00d4ff,stroke-width:3px,color:#fff,font-weight:bold,rx:15,ry:15;
     classDef filter fill:#ff4d00,stroke:#ff8c00,stroke-width:2px,color:#fff,font-weight:bold,rx:10,ry:10;
     classDef block fill:#e84545,stroke:#903749,stroke-width:2px,color:#fff,stroke-dasharray: 5 5,rx:10,ry:10;
     classDef upstream fill:#16c79a,stroke:#11999e,stroke-width:2px,color:#fff,font-weight:bold,rx:10,ry:10;
-    classDef subg fill:none,stroke:#444,stroke-width:1px,stroke-dasharray: 5 5;
+    classDef cache fill:#f0a500,stroke:#cf7500,stroke-width:2px,color:#fff,font-weight:bold,rx:10,ry:10;
+    classDef dummy fill:#555,stroke:#333,stroke-width:2px,color:#fff,stroke-dasharray: 5 5,rx:10,ry:10;
 
     %% Components
-    subgraph Clients ["📱 Ваші пристрої (Your Devices)"]
-        C1("💻 Laptop") ::: client
-        C2("📱 Smartphone") ::: client
+    subgraph Clients ["📱 Ваші пристрої"]
+        direction LR
+        C1("💻 Ноутбуки / ПК") ::: client
+        C2("📱 Смартфони") ::: client
         C3("📺 Smart TV / IoT") ::: client
     end
 
-    subgraph ADBlock_PD ["🛡️ ADBlock-PD (Docker: debian-slim)"]
+    subgraph Docker ["🐳 Docker Середовище (debian:bullseye-slim)"]
         direction TB
-        Proto["🔒 DoH / DoT / DoQ"]:::server
-        Engine["⚡ DNS & Filtering Engine"]:::server
-        Proto --> Engine
         
-        subgraph Hardening ["🔒 Security & Hardening"]
-            H1["🔇 Zero Telemetry"]
-            H2["🚀 No Updater (Anti-RCE)"]
-            H3["🔄 Auto-Heal (Healthcheck)"]
+        subgraph ADBlock_PD ["🛡️ Ядро ADBlock-Private-DNS"]
+            direction TB
+            Proto["🔒 DNS Слухачі<br>(DoH, DoT, DoQ, UDP/TCP 53)"]:::server
+            Engine["⚡ Головний рушій DNS<br>та обробник запитів"]:::server
+            Cache[("🗄️ Кеш DNS<br>(Миттєві відповіді)")]:::cache
+            
+            Proto <--> Engine
+            Engine <--> Cache
         end
-        Engine -.-> Hardening
+        
+        subgraph Hardening ["🔒 Блоки приватності (Hardening)"]
+            direction LR
+            H1["🔇 WHOIS Privacy<br>(Порожня заглушка)"]:::dummy
+            H2["🛑 SafeBrowsing<br>(Переспрямовано на 127.0.0.1)"]:::dummy
+            H3["🚀 Auto-Updater<br>(Фізично видалено)"]:::dummy
+        end
+        
+        Engine -.->|Стерилізація запитів| Hardening
+        
+        subgraph Logic ["⚙️ Розширена логіка фільтрації"]
+            direction TB
+            Rules1["📝 Правила користувача"]:::filter
+            Rules2["🛡️ Блок-листи безпеки<br>(Ukr Security, AdAway)"]:::filter
+        end
+        
+        Engine ==> Logic
     end
 
-    subgraph Logic ["⚙️ Filtering Logic"]
+    subgraph Outcomes ["🌐 Результат роздільної здатності (Оutcomes)"]
         direction LR
-        Rules["🛑 Blocklists & Rules"]:::filter
+        Null["🕳️ Чорна діра<br>(0.0.0.0 / NXDOMAIN)"]:::block
+        U1["🌍 Зашифровані Upstream-сервери<br>(Cloudflare, ControlD тощо)"]:::upstream
     end
 
-    subgraph Outcomes ["🌐 Роздільна здатність (Resolution)"]
-        Null["🕳️ Blackhole (0.0.0.0)"]:::block
-        U1["🌍 Upstream (Cloudflare/ControlD)"]:::upstream
+    subgraph Monitoring ["🏥 Надійність системи"]
+        HC["🩺 DNS Healthcheck<br>(Перевірка кожні 30 сек)"]:::upstream
     end
 
     %% Connections
-    C1 -->|Encrypted DNS| Proto
-    C2 -->|Encrypted DNS| Proto
-    C3 -->|Plain/Encrypted| Proto
+    C1 -->|Зашифрований DNS| Proto
+    C2 -->|Зашифрований DNS| Proto
+    C3 -->|Стандартний DNS| Proto
 
-    Engine ==> Logic
-    Logic =="Ads / Trackers / Phishing"==> Null
-    Logic =="Clean Traffic"==> U1
+    Logic =="Реклама / Трекери / Фішинг"==> Null
+    Logic =="Чистий та безпечний трафік"==> U1
+    
+    HC -.->|Опитує порт 53| Proto
+    HC -.->|Авто-рестарт при збої| Docker
 ```
 
 ## ✨ Ключові відмінності та посилення безпеки

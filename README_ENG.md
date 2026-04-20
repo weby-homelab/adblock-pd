@@ -39,54 +39,75 @@ Your DNS server should belong exclusively to you. No telemetry, no hidden reques
 ### 🏗️ Architecture
 
 ```mermaid
-graph TD
+flowchart TD
     %% Styling
     classDef client fill:#0072ff,stroke:#00d4ff,stroke-width:2px,color:#fff,font-weight:bold,rx:10,ry:10;
     classDef server fill:#1a1a2e,stroke:#00d4ff,stroke-width:3px,color:#fff,font-weight:bold,rx:15,ry:15;
     classDef filter fill:#ff4d00,stroke:#ff8c00,stroke-width:2px,color:#fff,font-weight:bold,rx:10,ry:10;
     classDef block fill:#e84545,stroke:#903749,stroke-width:2px,color:#fff,stroke-dasharray: 5 5,rx:10,ry:10;
     classDef upstream fill:#16c79a,stroke:#11999e,stroke-width:2px,color:#fff,font-weight:bold,rx:10,ry:10;
-    classDef subg fill:none,stroke:#444,stroke-width:1px,stroke-dasharray: 5 5;
+    classDef cache fill:#f0a500,stroke:#cf7500,stroke-width:2px,color:#fff,font-weight:bold,rx:10,ry:10;
+    classDef dummy fill:#555,stroke:#333,stroke-width:2px,color:#fff,stroke-dasharray: 5 5,rx:10,ry:10;
 
     %% Components
     subgraph Clients ["📱 Your Devices"]
-        C1("💻 Laptop") ::: client
-        C2("📱 Smartphone") ::: client
+        direction LR
+        C1("💻 Laptops / PC") ::: client
+        C2("📱 Smartphones") ::: client
         C3("📺 Smart TV / IoT") ::: client
     end
 
-    subgraph ADBlock_PD ["🛡️ ADBlock-PD (Docker: debian-slim)"]
+    subgraph Docker ["🐳 Docker Environment (debian:bullseye-slim)"]
         direction TB
-        Proto["🔒 DoH / DoT / DoQ"]:::server
-        Engine["⚡ DNS & Filtering Engine"]:::server
-        Proto --> Engine
         
-        subgraph Hardening ["🔒 Security & Hardening"]
-            H1["🔇 Zero Telemetry"]
-            H2["🚀 No Updater (Anti-RCE)"]
-            H3["🔄 Auto-Heal (Healthcheck)"]
+        subgraph ADBlock_PD ["🛡️ ADBlock-Private-DNS Core"]
+            direction TB
+            Proto["🔒 DNS Listeners<br>(DoH, DoT, DoQ, UDP/TCP 53)"]:::server
+            Engine["⚡ Core DNS Engine<br>& Query Processor"]:::server
+            Cache[("🗄️ DNS Cache<br>(Instant Responses)")]:::cache
+            
+            Proto <--> Engine
+            Engine <--> Cache
         end
-        Engine -.-> Hardening
+        
+        subgraph Hardening ["🔒 Privacy & Hardening Interceptors"]
+            direction LR
+            H1["🔇 WHOIS Privacy<br>(Empty Stub)"]:::dummy
+            H2["🛑 SafeBrowsing<br>(Redirected to 127.0.0.1)"]:::dummy
+            H3["🚀 Auto-Updater<br>(Physically Purged)"]:::dummy
+        end
+        
+        Engine -.->|Sanitized Queries| Hardening
+        
+        subgraph Logic ["⚙️ Advanced Filtering Logic"]
+            direction TB
+            Rules1["📝 Custom User Rules"]:::filter
+            Rules2["🛡️ Security Blocklists<br>(Ukr Security, AdAway)"]:::filter
+        end
+        
+        Engine ==> Logic
     end
 
-    subgraph Logic ["⚙️ Filtering Logic"]
+    subgraph Outcomes ["🌐 Resolution Outcomes"]
         direction LR
-        Rules["🛑 Blocklists & Rules"]:::filter
+        Null["🕳️ Blackhole<br>(0.0.0.0 / NXDOMAIN)"]:::block
+        U1["🌍 Encrypted Upstreams<br>(Cloudflare, ControlD, etc.)"]:::upstream
     end
 
-    subgraph Outcomes ["🌐 Resolution"]
-        Null["🕳️ Blackhole (0.0.0.0)"]:::block
-        U1["🌍 Upstream (Cloudflare/ControlD)"]:::upstream
+    subgraph Monitoring ["🏥 System Reliability"]
+        HC["🩺 DNS Healthcheck<br>(Checked every 30s)"]:::upstream
     end
 
     %% Connections
     C1 -->|Encrypted DNS| Proto
     C2 -->|Encrypted DNS| Proto
-    C3 -->|Plain/Encrypted| Proto
+    C3 -->|Plain DNS| Proto
 
-    Engine ==> Logic
     Logic =="Ads / Trackers / Phishing"==> Null
-    Logic =="Clean Traffic"==> U1
+    Logic =="Clean & Safe Traffic"==> U1
+    
+    HC -.->|Probes port 53| Proto
+    HC -.->|Auto-restarts on failure| Docker
 ```
 
 ## ✨ Key Hardening Features
