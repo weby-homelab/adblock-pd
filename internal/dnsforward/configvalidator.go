@@ -1,0 +1,430 @@
+package dnsforward
+
+import (
+	"context"
+	"fmt"
+	"log/slog"
+	"sync"
+
+	"github.com/AdguardTeam/dnsproxy/proxy"
+	"github.com/AdguardTeam/dnsproxy/upstream"
+	"github.com/AdguardTeam/golibs/errors"
+	"github.com/AdguardTeam/golibs/logutil/slogutil"
+	"github.com/miekg/dns"
+)
+
+// upstreamConfigValidator parses each section of an upstream configuration into
+// a corresponding [*proxy.UpstreamConfig] and checks the actual DNS
+// availability of each upstream.
+type upstreamConfigValidator struct {
+	// generalUpstreamResults contains upstream results of a general section.
+	generalUpstreamResults map[string]*upstreamResult
+
+	// fallbackUpstreamResults contains upstream results of a fallback section.
+	fallbackUpstreamResults map[string]*upstreamResult
+
+	// privateUpstreamResults contains upstream results of a private section.
+	privateUpstreamResults map[string]*upstreamResult
+
+	// generalParseResults contains parsing results of a general section.
+	generalParseResults []*parseResult
+
+	// fallbackParseResults contains parsing results of a fallback section.
+	fallbackParseResults []*parseResult
+
+	// privateParseResults contains parsing results of a private section.
+	privateParseResults []*parseResult
+}
+
+// upstreamResult is a result of parsing of an [upstream.Upstream] within an
+// [proxy.UpstreamConfig].
+type upstreamResult struct {
+	// server is the parsed upstream.
+	server upstream.Upstream
+
+	// err is the upstream check error.
+	err error
+
+	// isSpecific is true if the upstream is domain-specific.
+	isSpecific bool
+}
+
+// parseResult contains a original piece of upstream configuration and a
+// corresponding error.
+type parseResult struct {
+	err      *proxy.ParseError
+	original string
+}
+
+// newUpstreamConfigValidator parses the upstream configuration and returns a
+// validator for it.  cv already contains the parsed upstreams along with errors
+// related.
+func newUpstreamConfigValidator(
+	ctx context.Context,
+	general []string,
+	fallback []string,
+	private []string,
+	opts *upstream.Options,
+) (cv *upstreamConfigValidator) {
+	cv = &upstreamConfigValidator{
+		generalUpstreamResults:  map[string]*upstreamResult{},
+		fallbackUpstreamResults: map[string]*upstreamResult{},
+		privateUpstreamResults:  map[string]*upstreamResult{},
+	}
+
+	conf, err := proxy.ParseUpstreamsConfig(general, opts)
+	cv.generalParseResults = collectErrResults(ctx, opts.Logger, general, err)
+	insertConfResults(conf, cv.generalUpstreamResults)
+
+	conf, err = proxy.ParseUpstreamsConfig(fallback, opts)
+	cv.fallbackParseResults = collectErrResults(ctx, opts.Logger, fallback, err)
+	insertConfResults(conf, cv.fallbackUpstreamResults)
+
+	conf, err = proxy.ParseUpstreamsConfig(private, opts)
+	cv.privateParseResults = collectErrResults(ctx, opts.Logger, private, err)
+	insertConfResults(conf, cv.privateUpstreamResults)
+
+	return cv
+}
+
+// collectErrResults parses err and returns parsing results containing the
+// original upstream configuration line and the corresponding error.  err can be
+// nil.  l must not be nil.
+func collectErrResults(ctx context.Context, l *slog.Logger, lines []string, err error) (results []*parseResult) {
+	if err == nil {
+		return nil
+	}
+
+	// limit is a maximum length for upstream configuration lines.
+	const limit = 80
+
+	wrapper, isWrapper := err.(errors.WrapperSlice)
+	if !isWrapper {
+		l.DebugContext(ctx, "unwrapping", slogutil.KeyError, err)
+
+		return nil
+	}
+
+	errs := wrapper.Unwrap()
+	results = make([]*parseResult, 0, len(errs))
+	for i, e := range errs {
+		parseErr, ok := errors.AsType[*proxy.ParseError](e)
+		if !ok {
+			l.DebugContext(ctx, "inserting unexpected error", "index", i, slogutil.KeyError, err)
+
+			continue
+		}
+
+		idx := parseErr.Idx
+		line := []rune(lines[idx])
+		if len(line) > limit {
+			line = line[:limit]
+			line[limit-1] = '…'
+		}
+
+		results = append(results, &parseResult{
+			original: string(line),
+			err:      parseErr,
+		})
+	}
+
+	return results
+}
+
+// insertConfResults parses conf and inserts the upstream result into results.
+// It can insert multiple results as well as none.
+func insertConfResults(conf *proxy.UpstreamConfig, results map[string]*upstreamResult) {
+	insertListResults(conf.Upstreams, results, false)
+
+	for _, ups := range conf.DomainReservedUpstreams {
+		insertListResults(ups, results, true)
+	}
+
+	for _, ups := range conf.SpecifiedDomainUpstreams {
+		insertListResults(ups, results, true)
+	}
+}
+
+// insertListResults constructs upstream results from the upstream list and
+// inserts them into results.  It can insert multiple results as well as none.
+func insertListResults(ups []upstream.Upstream, results map[string]*upstreamResult, specific bool) {
+	for _, u := range ups {
+		addr := u.Address()
+		_, ok := results[addr]
+		if ok {
+			continue
+		}
+
+		results[addr] = &upstreamResult{
+			server:     u,
+			isSpecific: specific,
+		}
+	}
+}
+
+// check tries to exchange with each successfully parsed upstream and enriches
+// the results with the healthcheck errors.  It should not be called after the
+// [upsConfValidator.close] method, since it makes no sense to check the closed
+// upstreams.  l must not be nil.
+func (cv *upstreamConfigValidator) check(ctx context.Context, l *slog.Logger) {
+	const (
+		// testTLD is the special-use fully-qualified domain name for testing
+		// the DNS server reachability.
+		//
+		// See https://datatracker.ietf.org/doc/html/rfc6761#section-6.2.
+		testTLD = "test."
+
+		// inAddrARPATLD is the special-use fully-qualified domain name for PTR
+		// IP address resolution.
+		//
+		// See https://datatracker.ietf.org/doc/html/rfc1035#section-3.5.
+		inAddrARPATLD = "in-addr.arpa."
+	)
+
+	commonChecker := &healthchecker{
+		hostname: testTLD,
+		qtype:    dns.TypeA,
+		ansEmpty: true,
+	}
+
+	arpaChecker := &healthchecker{
+		hostname: inAddrARPATLD,
+		qtype:    dns.TypePTR,
+		ansEmpty: false,
+	}
+
+	wg := &sync.WaitGroup{}
+
+	for _, res := range cv.generalUpstreamResults {
+		wg.Go(func() { checkSrv(ctx, l, res, commonChecker) })
+	}
+	for _, res := range cv.fallbackUpstreamResults {
+		wg.Go(func() { checkSrv(ctx, l, res, commonChecker) })
+	}
+	for _, res := range cv.privateUpstreamResults {
+		wg.Go(func() { checkSrv(ctx, l, res, arpaChecker) })
+	}
+
+	wg.Wait()
+}
+
+// checkSrv runs hc on the server from res, if any, and stores any occurred
+// error in res.  It is used to be run in a separate goroutine.  l must not be
+// nil.
+func checkSrv(ctx context.Context, l *slog.Logger, res *upstreamResult, hc *healthchecker) {
+	defer slogutil.RecoverAndLog(ctx, l)
+
+	res.err = hc.check(res.server)
+	if res.err != nil && res.isSpecific {
+		res.err = domainSpecificTestError{Err: res.err}
+	}
+}
+
+// close closes all the upstreams that were successfully parsed.  It enriches
+// the results with deferred closing errors.
+func (cv *upstreamConfigValidator) close() {
+	all := []map[string]*upstreamResult{
+		cv.generalUpstreamResults,
+		cv.fallbackUpstreamResults,
+		cv.privateUpstreamResults,
+	}
+
+	for _, m := range all {
+		for _, r := range m {
+			r.err = errors.WithDeferred(r.err, r.server.Close())
+		}
+	}
+}
+
+// sections of the upstream configuration according to the text label of the
+// localization.
+//
+// Keep in sync with client/src/__locales/en.json.
+//
+// TODO(s.chzhen):  Refactor.
+const (
+	generalTextLabel  = "upstream_dns"
+	fallbackTextLabel = "fallback_dns_title"
+	privateTextLabel  = "local_ptr_title"
+)
+
+// status returns all the data collected during parsing, healthcheck, and
+// closing of the upstreams.  The returned map is keyed by the original upstream
+// configuration piece and contains the corresponding error or "OK" if there was
+// no error.  l must not be nil.
+func (cv *upstreamConfigValidator) status(
+	ctx context.Context,
+	l *slog.Logger,
+) (results map[string]string) {
+	// Names of the upstream configuration sections for logging.
+	const (
+		generalSection  = "general"
+		fallbackSection = "fallback"
+		privateSection  = "private"
+	)
+
+	results = map[string]string{}
+
+	for original, res := range cv.generalUpstreamResults {
+		upstreamResultToStatus(ctx, l, generalSection, string(original), res, results)
+	}
+	for original, res := range cv.fallbackUpstreamResults {
+		upstreamResultToStatus(ctx, l, fallbackSection, string(original), res, results)
+	}
+	for original, res := range cv.privateUpstreamResults {
+		upstreamResultToStatus(ctx, l, privateSection, string(original), res, results)
+	}
+
+	parseResultToStatus(ctx, l, generalTextLabel, generalSection, cv.generalParseResults, results)
+	parseResultToStatus(
+		ctx,
+		l,
+		fallbackTextLabel,
+		fallbackSection,
+		cv.fallbackParseResults,
+		results,
+	)
+	parseResultToStatus(ctx, l, privateTextLabel, privateSection, cv.privateParseResults, results)
+
+	return results
+}
+
+// upstreamResultToStatus puts "OK" or an error message from res into resMap.
+// section is the name of the upstream configuration section, i.e. "general",
+// "fallback", or "private", and only used for logging.  l must not be nil.
+//
+// TODO(e.burkov):  Currently, the HTTP handler expects that all the results are
+// put together in a single map, which may lead to collisions, see AG-27539.
+// Improve the results compilation.
+func upstreamResultToStatus(
+	ctx context.Context,
+	l *slog.Logger,
+	section string,
+	original string,
+	res *upstreamResult,
+	resMap map[string]string,
+) {
+	val := "OK"
+	if res.err != nil {
+		val = res.err.Error()
+	}
+
+	prevVal := resMap[original]
+	switch prevVal {
+	case "":
+		resMap[original] = val
+	case val:
+		l.DebugContext(ctx, "duplicating config line", "section", section, "address", original)
+	default:
+		l.WarnContext(
+			ctx,
+			"config line had different result",
+			"section", section,
+			"result", val,
+			"original", original,
+			"previous", prevVal,
+		)
+	}
+}
+
+// parseResultToStatus puts parsing error messages from results into resMap.
+// section is the name of the upstream configuration section, i.e. "general",
+// "fallback", or "private", and only used for logging.  l must not be nil.
+//
+// Parsing error message has the following format:
+//
+//	sectionTextLabel line: parsing error
+//
+// Where sectionTextLabel is a section text label of a localization and line is
+// a line number.
+func parseResultToStatus(
+	ctx context.Context,
+	l *slog.Logger,
+	textLabel string,
+	section string,
+	results []*parseResult,
+	resMap map[string]string,
+) {
+	for _, res := range results {
+		original := res.original
+		_, ok := resMap[original]
+		if ok {
+			l.DebugContext(
+				ctx,
+				"duplicating parsing error",
+				"section",
+				section,
+				"original",
+				original,
+			)
+
+			continue
+		}
+
+		resMap[original] = fmt.Sprintf("%s %d: parsing error", textLabel, res.err.Idx+1)
+	}
+}
+
+// domainSpecificTestError is a wrapper for errors returned by checkDNS to mark
+// the tested upstream domain-specific and therefore consider its errors
+// non-critical.
+//
+// TODO(a.garipov):  Some common mechanism of distinguishing between errors and
+// warnings (non-critical errors) is desired.
+type domainSpecificTestError struct {
+	// Err is the actual error occurred during healthcheck test.
+	Err error
+}
+
+// type check
+var _ error = domainSpecificTestError{}
+
+// Error implements the [error] interface for domainSpecificTestError.
+func (err domainSpecificTestError) Error() (msg string) {
+	return fmt.Sprintf("WARNING: %s", err.Err)
+}
+
+// type check
+var _ errors.Wrapper = domainSpecificTestError{}
+
+// Unwrap implements the [errors.Wrapper] interface for domainSpecificTestError.
+func (err domainSpecificTestError) Unwrap() (wrapped error) {
+	return err.Err
+}
+
+// healthchecker checks the upstream's status by exchanging with it.
+type healthchecker struct {
+	// hostname is the name of the host to put into healthcheck DNS request.
+	hostname string
+
+	// qtype is the type of DNS request to use for healthcheck.
+	qtype uint16
+
+	// ansEmpty defines if the answer section within the response is expected to
+	// be empty.
+	ansEmpty bool
+}
+
+// check exchanges with u and validates the response.
+func (h *healthchecker) check(u upstream.Upstream) (err error) {
+	req := &dns.Msg{
+		MsgHdr: dns.MsgHdr{
+			Id:               dns.Id(),
+			RecursionDesired: true,
+		},
+		Question: []dns.Question{{
+			Name:   h.hostname,
+			Qtype:  h.qtype,
+			Qclass: dns.ClassINET,
+		}},
+	}
+
+	reply, err := u.Exchange(req)
+	if err != nil {
+		return fmt.Errorf("couldn't communicate with upstream: %w", err)
+	} else if h.ansEmpty && len(reply.Answer) > 0 {
+		return errors.Error("wrong response")
+	}
+
+	return nil
+}

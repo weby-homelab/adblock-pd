@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# This comment is used to simplify checking local copies of the script.  Bump
+# this number every time a significant change is made to this script.
+#
+# AdGuard-Project-Version: 6
+
+set -e -f -u
+
+. ./scripts/hooks/helper.sh
+
+# Warn the programmer about temporary todos and skel FIXMEs, but do not fail the
+# commit, because the commit could be in a temporary branch.
+temp_todos="$(
+	git grep -e 'FIXME' -e 'TODO.*!!' -- \
+		':!./scripts/hooks/pre-commit' \
+		':!./client' \
+		|| :
+)"
+readonly temp_todos
+
+if [ "$temp_todos" != '' ]; then
+	printf 'WARNING: you have temporary todos:\n\n%s\n\n' "$temp_todos"
+	prompt
+fi
+
+check_unstaged_changes
+
+lint_staged_changes

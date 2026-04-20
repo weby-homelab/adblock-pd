@@ -1,0 +1,81 @@
+# ADBlock-Private-DNS Slim - Hardened Config (Auto-migrated from HTZNR)
+
+bind_host: 0.0.0.0
+bind_port: 80
+auth_name: admin
+auth_pass: '$2a$10$779532588147321558231uD.1O523588147321558231.523588' # Placeholder, please change in UI
+
+dns:
+  bind_hosts:
+    - 0.0.0.0
+  port: 53
+  bootstrap_dns:
+    - 1.1.1.1
+    - 8.8.8.8
+  upstream_dns:
+    - https://security.cloudflare-dns.com/dns-query
+    - quic://p1.freedns.controld.com
+  filtering_enabled: true
+  encryption_config:
+    enabled: true
+    server_name: srvrs.online
+    force_https: true
+    port_https: 443
+    port_dns_over_tls: 853
+    port_dns_over_quic: 853
+    # Certificates are managed via manual input as requested by user
+
+tls:
+  enabled: true
+  server_name: srvrs.online
+  force_https: true
+  port_https: 443
+  port_dns_over_tls: 853
+  port_dns_over_quic: 853
+
+filters:
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_2.txt
+    name: AdAway Default Blocklist
+    id: 2
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_62.txt
+    name: Ukrainian Security Filter
+    id: 1765389495
+  - enabled: true
+    url: https://raw.githubusercontent.com/ukrainianfilters/lists/main/combined/combined.txt
+    name: Ukr Combi List
+    id: 1765389514
+  - enabled: true
+    url: https://raw.githubusercontent.com/braveinnovators/ukrainian-security-filter/refs/heads/main/lists/adblock.txt
+    name: UKR Sec Filter
+    id: 1765389518
+
+user_rules:
+  - '@@||srvrs.online^$important'
+  - '||gov.ru^$important'
+  - '||rt.com^$important'
+  - '||yandex.ru^$important'
+  - '||mail.ru^$important'
+
+clients:
+  runtime_sources:
+    whois: false # Disabled for privacy
+    arp: true
+    rdns: true
+  persistent:
+    - name: A52
+      ids: ["a52"]
+    - name: A6
+      ids: ["a6"]
+    - name: RMN
+      ids: ["176.37.242.89"]
+    - name: RealME 6
+      ids: ["realme-6"]
+
+# Security Mandate: No phone home
+filtering:
+  safebrowsing_enabled: false
+  parental_enabled: false
+  safebrowsing_block_host: dns.weby.local
+  parental_block_host: dns.weby.local

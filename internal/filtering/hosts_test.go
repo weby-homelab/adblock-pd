@@ -1,0 +1,196 @@
+package filtering_test
+
+import (
+	"context"
+	"fmt"
+	"net/netip"
+	"testing"
+	"testing/fstest"
+
+	"github.com/AdguardTeam/ADBlock-PD/internal/aghnet"
+	"github.com/AdguardTeam/ADBlock-PD/internal/aghtest"
+	"github.com/AdguardTeam/ADBlock-PD/internal/filtering"
+	"github.com/AdguardTeam/ADBlock-PD/internal/filtering/rulelist"
+	"github.com/AdguardTeam/golibs/testutil"
+	"github.com/AdguardTeam/urlfilter/rules"
+	"github.com/miekg/dns"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
+
+func TestDNSFilter_CheckHost_hostsContainer(t *testing.T) {
+	addrv4 := netip.MustParseAddr("1.2.3.4")
+	addrv6 := netip.MustParseAddr("::1")
+	addrMapped := netip.MustParseAddr("::ffff:1.2.3.4")
+	addrv4Dup := netip.MustParseAddr("4.3.2.1")
+
+	data := fmt.Sprintf(
+		""+
+			"%[1]s v4.host.example\n"+
+			"%[2]s v6.host.example\n"+
+			"%[3]s mapped.host.example\n"+
+			"%[4]s v4.host.with-dup\n"+
+			"%[4]s v4.host.with-dup\n",
+		addrv4,
+		addrv6,
+		addrMapped,
+		addrv4Dup,
+	)
+
+	files := fstest.MapFS{
+		"hosts": &fstest.MapFile{
+			Data: []byte(data),
+		},
+	}
+	watcher := aghtest.NewFSWatcher()
+	watcher.OnEvents = func() (e <-chan struct{}) { return nil }
+	watcher.OnAdd = func(name string) (err error) { return nil }
+	watcher.OnShutdown = func(_ context.Context) (err error) { return nil }
+
+	ctx := testutil.ContextWithTimeout(t, testTimeout)
+	hc, err := aghnet.NewHostsContainer(ctx, testLogger, files, watcher, "hosts")
+	require.NoError(t, err)
+	testutil.CleanupAndRequireSuccess(t, hc.Close)
+
+	conf := &filtering.Config{
+		Logger:   testLogger,
+		EtcHosts: hc,
+	}
+	f, err := filtering.New(conf, nil)
+	require.NoError(t, err)
+
+	setts := &filtering.Settings{
+		FilteringEnabled: true,
+	}
+
+	testCases := []struct {
+		name      string
+		host      string
+		wantRules []*filtering.ResultRule
+		wantResps []rules.RRValue
+		dtyp      uint16
+	}{{
+		name: "v4",
+		host: "v4.host.example",
+		dtyp: dns.TypeA,
+		wantRules: []*filtering.ResultRule{{
+			Text:         "1.2.3.4 v4.host.example",
+			FilterListID: rulelist.APIIDEtcHosts,
+		}},
+		wantResps: []rules.RRValue{addrv4},
+	}, {
+		name: "v6",
+		host: "v6.host.example",
+		dtyp: dns.TypeAAAA,
+		wantRules: []*filtering.ResultRule{{
+			Text:         "::1 v6.host.example",
+			FilterListID: rulelist.APIIDEtcHosts,
+		}},
+		wantResps: []rules.RRValue{addrv6},
+	}, {
+		name: "mapped",
+		host: "mapped.host.example",
+		dtyp: dns.TypeAAAA,
+		wantRules: []*filtering.ResultRule{{
+			Text:         "::ffff:1.2.3.4 mapped.host.example",
+			FilterListID: rulelist.APIIDEtcHosts,
+		}},
+		wantResps: []rules.RRValue{addrMapped},
+	}, {
+		name: "ptr",
+		host: "4.3.2.1.in-addr.arpa",
+		dtyp: dns.TypePTR,
+		wantRules: []*filtering.ResultRule{{
+			Text:         "1.2.3.4 v4.host.example",
+			FilterListID: rulelist.APIIDEtcHosts,
+		}},
+		wantResps: []rules.RRValue{"v4.host.example"},
+	}, {
+		name: "ptr-mapped",
+		host: "4.0.3.0.2.0.1.0.f.f.f.f.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa",
+		dtyp: dns.TypePTR,
+		wantRules: []*filtering.ResultRule{{
+			Text:         "::ffff:1.2.3.4 mapped.host.example",
+			FilterListID: rulelist.APIIDEtcHosts,
+		}},
+		wantResps: []rules.RRValue{"mapped.host.example"},
+	}, {
+		name:      "not_found_v4",
+		host:      "non.existent.example",
+		dtyp:      dns.TypeA,
+		wantRules: nil,
+		wantResps: nil,
+	}, {
+		name:      "not_found_v6",
+		host:      "non.existent.example",
+		dtyp:      dns.TypeAAAA,
+		wantRules: nil,
+		wantResps: nil,
+	}, {
+		name:      "not_found_ptr",
+		host:      "4.3.2.2.in-addr.arpa",
+		dtyp:      dns.TypePTR,
+		wantRules: nil,
+		wantResps: nil,
+	}, {
+		name: "v4_mismatch",
+		host: "v4.host.example",
+		dtyp: dns.TypeAAAA,
+		wantRules: []*filtering.ResultRule{{
+			Text:         fmt.Sprintf("%s v4.host.example", addrv4),
+			FilterListID: rulelist.APIIDEtcHosts,
+		}},
+		wantResps: nil,
+	}, {
+		name: "v6_mismatch",
+		host: "v6.host.example",
+		dtyp: dns.TypeA,
+		wantRules: []*filtering.ResultRule{{
+			Text:         fmt.Sprintf("%s v6.host.example", addrv6),
+			FilterListID: rulelist.APIIDEtcHosts,
+		}},
+		wantResps: nil,
+	}, {
+		name:      "wrong_ptr",
+		host:      "4.3.2.1.ip6.arpa",
+		dtyp:      dns.TypePTR,
+		wantRules: nil,
+		wantResps: nil,
+	}, {
+		name:      "unsupported_type",
+		host:      "v4.host.example",
+		dtyp:      dns.TypeCNAME,
+		wantRules: nil,
+		wantResps: nil,
+	}, {
+		name: "v4_dup",
+		host: "v4.host.with-dup",
+		dtyp: dns.TypeA,
+		wantRules: []*filtering.ResultRule{{
+			Text:         "4.3.2.1 v4.host.with-dup",
+			FilterListID: rulelist.APIIDEtcHosts,
+		}},
+		wantResps: []rules.RRValue{addrv4Dup},
+	}}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			var res filtering.Result
+			res, err = f.CheckHost(tc.host, tc.dtyp, setts)
+			require.NoError(t, err)
+
+			if len(tc.wantRules) == 0 {
+				assert.Empty(t, res.Rules)
+				assert.Nil(t, res.DNSRewriteResult)
+
+				return
+			}
+
+			require.NotNil(t, res.DNSRewriteResult)
+			require.Contains(t, res.DNSRewriteResult.Response, tc.dtyp)
+
+			assert.Equal(t, tc.wantResps, res.DNSRewriteResult.Response[tc.dtyp])
+			assert.Equal(t, tc.wantRules, res.Rules)
+		})
+	}
+}

@@ -1,0 +1,454 @@
+  allowed_clients:
+    - 31.144.45.150/20
+    - 91.210.248.0/22
+    - 31.43.144.0/20
+    - 46.133.131.207/32
+    - 46.224.135.1/32
+    - 46.224.186.236/32
+    - 91.202.74.218/32
+    - 91.210.240.0/20
+    - 100.64.0.0/10
+    - 127.0.0.1/32
+    - 127.0.0.53/32
+    - 144.21.33.243/32
+    - 176.37.242.89/32
+    - 176.111.176.0/20
+    - 178.133.144.0/20
+    - 185.139.55.157/32
+    - 194.164.198.173/32
+    - 217.154.147.139/32
+    - a52
+    - a52-chrm
+    - a6
+    - a6-chrm
+    - adgrd
+    - block
+    - dell281
+    - dell281-chrm
+    - dell281-eth
+    - dell281-wifi
+    - edge
+    - hp
+    - hp-chrm
+    - ipad
+    - iphone
+    - iron
+    - p-smart
+    - p-smart-chrm
+    - realme-6
+    - realme-6-chrm
+    - sbook-chrm
+    - sbook-edge
+    - sbook-wifi
+    - tekno-5
+    - tekno-5-chrm
+    - ws
+    - ws-chrm
+    - ws-eth
+    - yoga
+    - yoga-chrm
+    - yoga-eth
+    - yoga-wifi
+  disallowed_clients: []
+  blocked_hosts:
+    - '*.netisrouter_64eeb7eec5d4'
+    - dns.srvrs.online
+    - dns.srvrs.top
+    - example.com
+    - hostname.bind
+    - id.server
+    - version.bind
+    - version.server
+    - '*.lan'
+    - wpad.*
+  trusted_proxies:
+    - 127.0.0.0/8
+    - ::1/128
+  cache_enabled: true
+  cache_size: 94194304
+  cache_ttl_min: 60
+  cache_ttl_max: 3000
+  cache_optimistic: true
+  cache_optimistic_answer_ttl: 30s
+  cache_optimistic_max_age: 12h
+  bogus_nxdomain: []
+  aaaa_disabled: true
+  enable_dnssec: true
+  edns_client_subnet:
+    custom_ip: ""
+    enabled: false
+    use_custom: false
+  max_goroutines: 300
+  handle_ddr: true
+  ipset: []
+  ipset_file: ""
+  bootstrap_prefer_ipv6: false
+  upstream_timeout: 1s
+  private_networks: []
+  use_private_ptr_resolvers: false
+  local_ptr_upstreams:
+    - 127.0.0.53
+  use_dns64: false
+  dns64_prefixes: []
+  serve_http3: false
+  use_http3_upstreams: false
+  serve_plain_dns: true
+  hostsfile_enabled: true
+  pending_requests:
+    enabled: true
+tls:
+  enabled: true
+  server_name: srvrs.top
+  force_https: true
+  port_https: 443
+  port_dns_over_tls: 853
+  port_dns_over_quic: 853
+  port_dnscrypt: 0
+  dnscrypt_config_file: ""
+  certificate_chain: ""
+  private_key: ""
+  certificate_path: /etc/letsencrypt/live/srvrs.online/fullchain.pem
+  private_key_path: /etc/letsencrypt/live/srvrs.online/privkey.pem
+  strict_sni_check: false
+querylog:
+  dir_path: ""
+  ignored: []
+  interval: 24h
+  size_memory: 1000
+  enabled: true
+  ignored_enabled: false
+  file_enabled: true
+statistics:
+  dir_path: ""
+  ignored: []
+  interval: 24h
+  enabled: true
+  ignored_enabled: false
+filters:
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_2.txt
+    name: AdAway Default Blocklist
+    id: 2
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_59.txt
+    name: AdGuard DNS Popup Hosts filter
+    id: 1765389491
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_42.txt
+    name: ShadowWhisperer's Malware List
+    id: 1765389492
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_66.txt
+    name: HaGeZi's OPPO & Realme Tracker Blocklist
+    id: 1765389493
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_61.txt
+    name: HaGeZi's Samsung Tracker Blocklist
+    id: 1765389494
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_62.txt
+    name: Ukrainian Security Filter
+    id: 1765389495
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_18.txt
+    name: Phishing Army
+    id: 1765389496
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_60.txt
+    name: HaGeZi's Xiaomi Tracker Blocklist
+    id: 1765389497
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_30.txt
+    name: Phishing URL Blocklist (PhishTank and OpenPhish)
+    id: 1765389498
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_12.txt
+    name: Dandelion Sprout's Anti-Malware List
+    id: 1765389499
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_65.txt
+    name: HaGeZi's Vivo Tracker Blocklist
+    id: 1765389501
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_63.txt
+    name: HaGeZi's Windows/Office Tracker Blocklist
+    id: 1765389502
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_69.txt
+    name: ShadowWhisperer Tracking List
+    id: 1765389503
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_57.txt
+    name: ShadowWhisperer's Dating List
+    id: 1765389504
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_53.txt
+    name: AWAvenue Ads Rule
+    id: 1765389505
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_3.txt
+    name: Peter Lowe's Blocklist
+    id: 1765389506
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_39.txt
+    name: Dandelion Sprout's Anti Push Notifications
+    id: 1765389507
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_33.txt
+    name: Steven Black's List
+    id: 1765389508
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_67.txt
+    name: HaGeZi's Apple Tracker Blocklist
+    id: 1765389509
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_31.txt
+    name: Stalkerware Indicators List
+    id: 1765389510
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_9.txt
+    name: The Big List of Hacked Malware Web Sites
+    id: 1765389511
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_50.txt
+    name: uBlock₀ filters – Badware risks
+    id: 1765389512
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_11.txt
+    name: Malicious URL Blocklist (URLHaus)
+    id: 1765389513
+  - enabled: true
+    url: https://raw.githubusercontent.com/ukrainianfilters/lists/main/combined/combined.txt
+    name: Ukr Combi List
+    id: 1765389514
+  - enabled: true
+    url: https://raw.githubusercontent.com/ukrainianfilters/lists/main/ads/ads.txt
+    name: Ukr AD Filter
+    id: 1765389515
+  - enabled: true
+    url: https://raw.githubusercontent.com/braveinnovators/ukrainian-security-filter/refs/heads/main/lists/adblock.txt
+    name: UKR Sec Filter
+    id: 1765389518
+  - enabled: true
+    url: https://raw.githubusercontent.com/braveinnovators/ukrainian-security-filter/main/lists/adblock.txt
+    name: UA Brave
+    id: 1765389519
+  - enabled: true
+    url: https://raw.githubusercontent.com/ukrainianfilters/lists/main/annoyances/annoyances.txt
+    name: UA повідомлення про файли cookie, спливаючі вікна, банери тощо
+    id: 1765389522
+  - enabled: true
+    url: https://raw.githubusercontent.com/d3ward/toolz/master/src/d3host.adblock
+    name: ADBlock TEST Page
+    id: 1767024382
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_7.txt
+    name: Perflyst and Dandelion Sprout's Smart-TV Blocklist
+    id: 1767024383
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_54.txt
+    name: HaGeZi's DynDNS Blocklist
+    id: 1767517949
+  - enabled: true
+--
+clients:
+  runtime_sources:
+    whois: true
+    arp: true
+    rdns: true
+    dhcp: true
+    hosts: true
+  persistent:
+    - safe_search:
+        enabled: false
+        bing: true
+        duckduckgo: true
+        ecosia: true
+        google: true
+        pixabay: true
+        yandex: true
+        youtube: true
+      blocked_services:
+        schedule:
+          time_zone: Local
+        ids: []
+      name: A52 ☎
+      ids:
+        - a52
+      tags:
+        - device_phone
+      upstreams: []
+      uid: 019b122f-6f6d-7b59-8cf2-e85af3d5ffcb
+      upstreams_cache_size: 0
+      upstreams_cache_enabled: false
+      use_global_settings: true
+      filtering_enabled: false
+      parental_enabled: false
+      safebrowsing_enabled: false
+      use_global_blocked_services: true
+      ignore_querylog: false
+      ignore_statistics: false
+    - safe_search:
+        enabled: false
+        bing: true
+        duckduckgo: true
+        ecosia: true
+        google: true
+        pixabay: true
+        yandex: true
+        youtube: true
+      blocked_services:
+        schedule:
+          time_zone: Local
+        ids: []
+      name: "A52 \U0001F310 CHRM"
+      ids:
+        - a52-chrm
+      tags:
+        - device_phone
+      upstreams: []
+      uid: 019b122f-c2fb-7e15-a1ae-821bb15c47ec
+      upstreams_cache_size: 0
+      upstreams_cache_enabled: false
+      use_global_settings: true
+      filtering_enabled: false
+      parental_enabled: false
+      safebrowsing_enabled: false
+      use_global_blocked_services: true
+      ignore_querylog: false
+      ignore_statistics: false
+    - safe_search:
+        enabled: false
+        bing: true
+        duckduckgo: true
+        ecosia: true
+        google: true
+        pixabay: true
+        yandex: true
+        youtube: true
+      blocked_services:
+        schedule:
+          time_zone: Local
+        ids: []
+      name: A6 ☎
+      ids:
+        - a6
+      tags: []
+      upstreams: []
+      uid: 019b1230-ea0a-78ed-a77c-26269401dba8
+      upstreams_cache_size: 0
+      upstreams_cache_enabled: false
+      use_global_settings: true
+      filtering_enabled: false
+      parental_enabled: false
+      safebrowsing_enabled: false
+      use_global_blocked_services: true
+      ignore_querylog: false
+      ignore_statistics: false
+    - safe_search:
+        enabled: false
+        bing: true
+        duckduckgo: true
+        ecosia: true
+        google: true
+        pixabay: true
+        yandex: true
+        youtube: true
+      blocked_services:
+        schedule:
+          time_zone: Local
+        ids: []
+      name: "A6 \U0001F310 CHRM"
+      ids:
+        - a6-chrm
+      tags: []
+      upstreams: []
+      uid: 019b1231-55ae-7e12-8456-355b244ad434
+      upstreams_cache_size: 0
+      upstreams_cache_enabled: false
+      use_global_settings: true
+      filtering_enabled: false
+      parental_enabled: false
+      safebrowsing_enabled: false
+      use_global_blocked_services: true
+      ignore_querylog: false
+      ignore_statistics: false
+    - safe_search:
+        enabled: false
+        bing: true
+        duckduckgo: true
+        ecosia: true
+        google: true
+        pixabay: true
+        yandex: true
+        youtube: true
+      blocked_services:
+        schedule:
+          time_zone: Local
+        ids: []
+      name: ADGRD ⚠️
+      ids:
+        - adgrd
+      tags:
+        - device_other
+      upstreams: []
+      uid: 019b12d7-371c-71de-866b-cb49c1545a80
+      upstreams_cache_size: 0
+      upstreams_cache_enabled: false
+      use_global_settings: true
+      filtering_enabled: false
+      parental_enabled: false
+      safebrowsing_enabled: false
+      use_global_blocked_services: true
+      ignore_querylog: false
+      ignore_statistics: false
+    - safe_search:
+        enabled: false
+        bing: true
+        duckduckgo: true
+        ecosia: true
+        google: true
+        pixabay: true
+        yandex: true
+        youtube: true
+      blocked_services:
+        schedule:
+          time_zone: Local
+        ids: []
+      name: BLOCK ⛔
+      ids:
+        - block
+      tags:
+        - device_phone
+      upstreams: []
+      uid: 019b12d1-7635-7ad9-87f6-da64469aed03
+      upstreams_cache_size: 0
+      upstreams_cache_enabled: false
+      use_global_settings: true
+      filtering_enabled: false
+      parental_enabled: false
+      safebrowsing_enabled: false
+      use_global_blocked_services: true
+      ignore_querylog: false
+      ignore_statistics: false
+    - safe_search:
+        enabled: false
+        bing: true
+        duckduckgo: true
+        ecosia: true
+        google: true
+        pixabay: true
+        yandex: true
+        youtube: true
+      blocked_services:
+        schedule:
+          time_zone: Local
+        ids: []
+      name: "Dell281 \U0001F310 WI-FI"
+      ids:
+        - dell281-wifi
+      tags:
+        - device_laptop
+      upstreams: []
+      uid: 019b12dd-9bae-7a20-a80e-29b82f2be738
+      upstreams_cache_size: 0

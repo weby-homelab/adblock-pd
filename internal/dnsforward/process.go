@@ -1,0 +1,646 @@
+package dnsforward
+
+import (
+	"context"
+	"log/slog"
+	"net"
+	"net/netip"
+	"strings"
+	"time"
+
+	"github.com/AdguardTeam/ADBlock-PD/internal/filtering"
+	"github.com/AdguardTeam/dnsproxy/proxy"
+	"github.com/AdguardTeam/golibs/netutil"
+	"github.com/miekg/dns"
+)
+
+// To transfer information between modules
+//
+// TODO(s.chzhen):  Add lowercased, non-FQDN version of the hostname from the
+// question of the request.  Add persistent client.
+type dnsContext struct {
+	proxyCtx *proxy.DNSContext
+
+	// setts are the filtering settings for the client.
+	setts *filtering.Settings
+
+	result *filtering.Result
+
+	// origResp is the response received from upstream.  It is set when the
+	// response is modified by filters.
+	origResp *dns.Msg
+
+	// err is the error returned from a processing function.
+	err error
+
+	// clientID is the ClientID from DoH, DoQ, or DoT, if provided.
+	clientID string
+
+	// startTime is the time at which the processing of the request has started.
+	startTime time.Time
+
+	// origQuestion is the question received from the client.  It is set
+	// when the request is modified by rewrites.
+	origQuestion dns.Question
+
+	// protectionEnabled shows if the filtering is enabled, and if the
+	// server's DNS filter is ready.
+	protectionEnabled bool
+
+	// responseFromUpstream shows if the response is received from the
+	// upstream servers.
+	responseFromUpstream bool
+
+	// responseAD shows if the response had the AD bit set.
+	responseAD bool
+
+	// isDHCPHost is true if the request for a local domain name and the DHCP is
+	// available for this request.
+	isDHCPHost bool
+}
+
+// resultCode is the result of a request processing function.
+type resultCode int
+
+const (
+	// resultCodeSuccess is returned when a handler performed successfully, and
+	// the next handler must be called.
+	resultCodeSuccess resultCode = iota
+
+	// resultCodeFinish is returned when a handler performed successfully, and
+	// the processing of the request must be stopped.
+	resultCodeFinish
+
+	// resultCodeError is returned when a handler failed, and the processing of
+	// the request must be stopped.
+	resultCodeError
+)
+
+// ddrHostFQDN is the FQDN used in Discovery of Designated Resolvers (DDR) requests.
+// See https://www.ietf.org/archive/id/draft-ietf-add-ddr-06.html.
+const ddrHostFQDN = "_dns.resolver.arpa."
+
+// mozillaFQDN is the domain used to signal the Firefox browser to not use its
+// own DoH server.
+//
+// See https://support.mozilla.org/en-US/kb/canary-domain-use-application-dnsnet.
+const mozillaFQDN = "use-application-dns.net."
+
+// healthcheckFQDN is a reserved domain-name used for healthchecking.
+//
+// [Section 6.2 of RFC 6761] states that DNS Registries/Registrars must not
+// grant requests to register test names in the normal way to any person or
+// entity, making domain names under the .test TLD free to use in internal
+// purposes.
+//
+// [Section 6.2 of RFC 6761]: https://www.rfc-editor.org/rfc/rfc6761.html#section-6.2
+const healthcheckFQDN = "healthcheck.adguardhome.test."
+
+// processInitial terminates the following processing for some requests if
+// needed and enriches dctx with some client-specific information.  l and dctx
+// must not be nil.
+//
+// TODO(e.burkov):  Decompose into less general processors.
+func (s *Server) processInitial(
+	ctx context.Context,
+	l *slog.Logger,
+	dctx *dnsContext,
+) (rc resultCode) {
+	l.DebugContext(ctx, "started processing initial")
+	defer l.DebugContext(ctx, "finished processing initial")
+
+	pctx := dctx.proxyCtx
+	s.processClientIP(ctx, l, pctx.Addr.Addr())
+
+	q := pctx.Req.Question[0]
+	qt := q.Qtype
+	if s.conf.AAAADisabled && qt == dns.TypeAAAA {
+		pctx.Res = s.NewMsgNODATA(pctx.Req)
+
+		return resultCodeFinish
+	}
+
+	if (qt == dns.TypeA || qt == dns.TypeAAAA) && q.Name == mozillaFQDN {
+		pctx.Res = s.NewMsgNXDOMAIN(pctx.Req)
+
+		return resultCodeFinish
+	}
+
+	if q.Name == healthcheckFQDN {
+		// Generate a NODATA negative response to make nslookup exit with 0.
+		pctx.Res = s.replyCompressed(pctx.Req)
+
+		return resultCodeFinish
+	}
+
+	// Get the ClientID, if any, before getting client-specific filtering
+	// settings.
+	clientID, ok := clientIDFromContext(ctx)
+	if ok {
+		dctx.clientID = clientID
+	}
+
+	// Get the client-specific filtering settings.
+	dctx.protectionEnabled, _ = s.UpdatedProtectionStatus(ctx)
+	dctx.setts = s.clientRequestFilteringSettings(dctx)
+
+	return resultCodeSuccess
+}
+
+// processClientIP sends the client IP address to s.addrProc, if needed.  l must
+// not be nil.
+func (s *Server) processClientIP(ctx context.Context, l *slog.Logger, addr netip.Addr) {
+	if !addr.IsValid() {
+		l.WarnContext(ctx, "bad client address", "addr", addr)
+
+		return
+	}
+
+	// Do not assign s.addrProc to a local variable to then use, since this lock
+	// also serializes the closure of s.addrProc.
+	s.serverLock.RLock()
+	defer s.serverLock.RUnlock()
+
+	s.addrProc.Process(ctx, addr)
+}
+
+// processDDRQuery responds to Discovery of Designated Resolvers (DDR) SVCB
+// queries.  The response contains different types of encryption supported by
+// current user configuration.  l and dctx must not be nil.
+//
+// See https://www.ietf.org/archive/id/draft-ietf-add-ddr-10.html.
+func (s *Server) processDDRQuery(
+	ctx context.Context,
+	l *slog.Logger,
+	dctx *dnsContext,
+) (rc resultCode) {
+	l.DebugContext(ctx, "started processing ddr")
+	defer l.DebugContext(ctx, "finished processing ddr")
+
+	if !s.conf.HandleDDR {
+		return resultCodeSuccess
+	}
+
+	pctx := dctx.proxyCtx
+	q := pctx.Req.Question[0]
+	if q.Name == ddrHostFQDN {
+		pctx.Res = s.makeDDRResponse(pctx.Req)
+
+		return resultCodeFinish
+	}
+
+	return resultCodeSuccess
+}
+
+// makeDDRResponse creates a DDR answer based on the server configuration.  The
+// constructed SVCB resource records have the priority of 1 for each entry,
+// similar to examples provided by the [draft standard].
+//
+// TODO(a.meshkov):  Consider setting the priority values based on the protocol.
+//
+// [draft standard]: https://www.ietf.org/archive/id/draft-ietf-add-ddr-10.html.
+func (s *Server) makeDDRResponse(req *dns.Msg) (resp *dns.Msg) {
+	resp = s.replyCompressed(req)
+	if req.Question[0].Qtype != dns.TypeSVCB {
+		return resp
+	}
+
+	// TODO(e.burkov):  Think about storing the FQDN version of the server's
+	// name somewhere.
+	domainName := dns.Fqdn(s.conf.TLSConf.ServerName)
+
+	for _, addr := range s.conf.TLSConf.HTTPSListenAddrs {
+		values := []dns.SVCBKeyValue{
+			&dns.SVCBAlpn{Alpn: []string{"h2"}},
+			&dns.SVCBPort{Port: addr.Port()},
+			&dns.SVCBDoHPath{Template: "/dns-query{?dns}"},
+		}
+
+		ans := &dns.SVCB{
+			Hdr:      s.hdr(req, dns.TypeSVCB),
+			Priority: 1,
+			Target:   domainName,
+			Value:    values,
+		}
+
+		resp.Answer = append(resp.Answer, ans)
+	}
+
+	if s.hasIPAddrs {
+		// Only add DNS-over-TLS resolvers in case the certificate contains IP
+		// addresses.
+		//
+		// See https://github.com/AdguardTeam/ADBlock-PD/issues/4927.
+		for _, addr := range s.dnsProxy.TLSListenAddr {
+			values := []dns.SVCBKeyValue{
+				&dns.SVCBAlpn{Alpn: []string{"dot"}},
+				&dns.SVCBPort{Port: uint16(addr.Port)},
+			}
+
+			ans := &dns.SVCB{
+				Hdr:      s.hdr(req, dns.TypeSVCB),
+				Priority: 1,
+				Target:   domainName,
+				Value:    values,
+			}
+
+			resp.Answer = append(resp.Answer, ans)
+		}
+	}
+
+	for _, addr := range s.dnsProxy.QUICListenAddr {
+		values := []dns.SVCBKeyValue{
+			&dns.SVCBAlpn{Alpn: []string{"doq"}},
+			&dns.SVCBPort{Port: uint16(addr.Port)},
+		}
+
+		ans := &dns.SVCB{
+			Hdr:      s.hdr(req, dns.TypeSVCB),
+			Priority: 1,
+			Target:   domainName,
+			Value:    values,
+		}
+
+		resp.Answer = append(resp.Answer, ans)
+	}
+
+	return resp
+}
+
+// processDHCPHosts respond to A requests if the target hostname is known to
+// the server.  It responds with a mapped IP address if the DNS64 is enabled and
+// the request is for AAAA.  l and dctx must not be nil.
+//
+// TODO(a.garipov): Adapt to AAAA as well.
+func (s *Server) processDHCPHosts(
+	ctx context.Context,
+	l *slog.Logger,
+	dctx *dnsContext,
+) (rc resultCode) {
+	l.DebugContext(ctx, "started processing dhcp hosts")
+	defer l.DebugContext(ctx, "finished processing dhcp hosts")
+
+	pctx := dctx.proxyCtx
+	req := pctx.Req
+
+	q := &req.Question[0]
+	dhcpHost := s.dhcpHostFromRequest(q)
+	if dctx.isDHCPHost = dhcpHost != ""; !dctx.isDHCPHost {
+		return resultCodeSuccess
+	}
+
+	if !pctx.IsPrivateClient {
+		l.DebugContext(
+			ctx,
+			"requests for dhcp host",
+			"addr", pctx.Addr,
+			"dhcp_host", dhcpHost,
+		)
+		pctx.Res = s.NewMsgNXDOMAIN(req)
+
+		// Do not even put into query log.
+		return resultCodeFinish
+	}
+
+	ip := s.dhcpServer.IPByHost(dhcpHost)
+	if ip == (netip.Addr{}) {
+		// Go on and process them with filters, including dnsrewrite ones, and
+		// possibly route them to a domain-specific upstream.
+		l.DebugContext(ctx, "no dhcp record", "dhcp_host", dhcpHost)
+
+		return resultCodeSuccess
+	}
+
+	l.DebugContext(ctx, "dhcp record for", "dhcp_host", dhcpHost, "ip", ip)
+
+	resp := s.replyCompressed(req)
+	switch q.Qtype {
+	case dns.TypeA:
+		a := &dns.A{
+			Hdr: s.hdr(req, dns.TypeA),
+			A:   ip.AsSlice(),
+		}
+		resp.Answer = append(resp.Answer, a)
+	case dns.TypeAAAA:
+		if s.dns64Pref != (netip.Prefix{}) {
+			// Respond with DNS64-mapped address for IPv4 host if DNS64 is
+			// enabled.
+			aaaa := &dns.AAAA{
+				Hdr:  s.hdr(req, dns.TypeAAAA),
+				AAAA: s.mapDNS64(ip),
+			}
+			resp.Answer = append(resp.Answer, aaaa)
+		}
+	default:
+		// Go on.
+	}
+
+	dctx.proxyCtx.Res = resp
+
+	return resultCodeSuccess
+}
+
+// processDHCPAddrs responds to PTR requests if the target IP is leased by the
+// DHCP server.  l and dctx must not be nil.
+func (s *Server) processDHCPAddrs(
+	ctx context.Context,
+	l *slog.Logger,
+	dctx *dnsContext,
+) (rc resultCode) {
+	l.DebugContext(ctx, "started processing dhcp addrs")
+	defer l.DebugContext(ctx, "finished processing dhcp addrs")
+
+	pctx := dctx.proxyCtx
+	if pctx.Res != nil {
+		return resultCodeSuccess
+	}
+
+	req := pctx.Req
+	q := req.Question[0]
+	pref := pctx.RequestedPrivateRDNS
+	// TODO(e.burkov):  Consider answering authoritatively for SOA and NS
+	// queries.
+	if pref == (netip.Prefix{}) || q.Qtype != dns.TypePTR {
+		return resultCodeSuccess
+	}
+
+	addr := pref.Addr()
+	host := s.dhcpServer.HostByIP(addr)
+	if host == "" {
+		return resultCodeSuccess
+	}
+
+	l.DebugContext(ctx, "dhcp client", "addr", addr, "host", host)
+
+	resp := s.replyCompressed(req)
+	ptr := &dns.PTR{
+		Hdr: dns.RR_Header{
+			Name:   q.Name,
+			Rrtype: dns.TypePTR,
+			// TODO(e.burkov):  Use [dhcpsvc.Lease.Expiry].  See
+			// https://github.com/AdguardTeam/ADBlock-PD/issues/3932.
+			Ttl:   s.dnsFilter.BlockedResponseTTL(),
+			Class: dns.ClassINET,
+		},
+		Ptr: dns.Fqdn(strings.Join([]string{host, s.localDomainSuffix}, ".")),
+	}
+	resp.Answer = append(resp.Answer, ptr)
+	pctx.Res = resp
+
+	return resultCodeSuccess
+}
+
+// processFilteringBeforeRequest applies filtering logic.  l and dctx must not
+// be nil.
+func (s *Server) processFilteringBeforeRequest(
+	ctx context.Context,
+	l *slog.Logger,
+	dctx *dnsContext,
+) (rc resultCode) {
+	l.DebugContext(ctx, "started processing filtering before request")
+	defer l.DebugContext(ctx, "finished processing filtering before request")
+
+	if dctx.proxyCtx.RequestedPrivateRDNS != (netip.Prefix{}) {
+		// There is no need to filter request for locally served ARPA hostname
+		// so disable redundant filters.
+		dctx.setts.ParentalEnabled = false
+		dctx.setts.SafeBrowsingEnabled = false
+		dctx.setts.SafeSearchEnabled = false
+		dctx.setts.ServicesRules = nil
+	}
+
+	if dctx.proxyCtx.Res != nil {
+		// Go on since the response is already set.
+		return resultCodeSuccess
+	}
+
+	s.serverLock.RLock()
+	defer s.serverLock.RUnlock()
+
+	var err error
+	if dctx.result, err = s.filterDNSRequest(ctx, l, dctx); err != nil {
+		dctx.err = err
+
+		return resultCodeError
+	}
+
+	return resultCodeSuccess
+}
+
+// ipStringFromAddr extracts an IP address string from net.Addr.
+func ipStringFromAddr(addr net.Addr) (ipStr string) {
+	if ip, _ := netutil.IPAndPortFromAddr(addr); ip != nil {
+		return ip.String()
+	}
+
+	return ""
+}
+
+// processUpstream passes request to upstream servers and handles the response.
+// l and dctx must not be nil.
+func (s *Server) processUpstream(
+	ctx context.Context,
+	l *slog.Logger,
+	dctx *dnsContext,
+) (rc resultCode) {
+	l.DebugContext(ctx, "started processing upstream")
+	defer l.DebugContext(ctx, "finished processing upstream")
+
+	pctx := dctx.proxyCtx
+	req := pctx.Req
+
+	if pctx.Res != nil {
+		// The response has already been set.
+		return resultCodeSuccess
+	} else if dctx.isDHCPHost {
+		// A DHCP client hostname query that hasn't been handled or filtered.
+		// Respond with an NXDOMAIN.
+		//
+		// TODO(a.garipov): Route such queries to a custom upstream for the
+		// local domain name if there is one.
+		name := req.Question[0].Name
+		l.DebugContext(
+			ctx,
+			"dhcp client hostname was not filtered",
+			"hostname", name[:len(name)-1],
+		)
+		pctx.Res = s.NewMsgNXDOMAIN(req)
+
+		return resultCodeFinish
+	}
+
+	s.setCustomUpstream(ctx, l, pctx, dctx.clientID)
+
+	reqWantsDNSSEC := s.setReqAD(req)
+
+	// Process the request further since it wasn't filtered.
+	prx := s.proxy()
+	if prx == nil {
+		dctx.err = srvClosedErr
+
+		return resultCodeError
+	}
+
+	if dctx.err = prx.Resolve(ctx, pctx); dctx.err != nil {
+		return resultCodeError
+	}
+
+	dctx.responseFromUpstream = true
+	dctx.responseAD = pctx.Res.AuthenticatedData
+
+	s.setRespAD(pctx, reqWantsDNSSEC)
+
+	return resultCodeSuccess
+}
+
+// setReqAD changes the request based on the server settings.  wantsDNSSEC is
+// false if the response should be cleared of the AD bit.
+//
+// TODO(a.garipov, e.burkov): This should probably be done in module dnsproxy.
+func (s *Server) setReqAD(req *dns.Msg) (wantsDNSSEC bool) {
+	if !s.conf.EnableDNSSEC {
+		return false
+	}
+
+	origReqAD := req.AuthenticatedData
+	req.AuthenticatedData = true
+
+	// Per [RFC 6840] says, validating resolvers should only set the AD bit when
+	// the response has the AD bit set and the request contained either a set DO
+	// bit or a set AD bit.  So, if neither of these is true, clear the AD bits
+	// in [Server.setRespAD].
+	//
+	// [RFC 6840]: https://datatracker.ietf.org/doc/html/rfc6840#section-5.8
+	return origReqAD || hasDO(req)
+}
+
+// hasDO returns true if msg has EDNS(0) options and the DNSSEC OK flag is set
+// in there.
+//
+// TODO(a.garipov): Move to golibs/dnsmsg when it's there.
+func hasDO(msg *dns.Msg) (do bool) {
+	o := msg.IsEdns0()
+	if o == nil {
+		return false
+	}
+
+	return o.Do()
+}
+
+// setRespAD changes the request and response based on the server settings and
+// the original request data.
+func (s *Server) setRespAD(pctx *proxy.DNSContext, reqWantsDNSSEC bool) {
+	if s.conf.EnableDNSSEC && !reqWantsDNSSEC {
+		pctx.Req.AuthenticatedData = false
+		pctx.Res.AuthenticatedData = false
+	}
+}
+
+// dhcpHostFromRequest returns a hostname from question, if the request is for a
+// DHCP client's hostname when DHCP is enabled, and an empty string otherwise.
+func (s *Server) dhcpHostFromRequest(q *dns.Question) (reqHost string) {
+	if !s.dhcpServer.Enabled() {
+		return ""
+	}
+
+	// Include AAAA here, because despite the fact that we don't support it yet,
+	// the expected behavior here is to respond with an empty answer and not
+	// NXDOMAIN.
+	if qt := q.Qtype; qt != dns.TypeA && qt != dns.TypeAAAA {
+		return ""
+	}
+
+	reqHost = strings.ToLower(q.Name[:len(q.Name)-1])
+	if !netutil.IsSubdomain(reqHost, s.localDomainSuffix) {
+		return ""
+	}
+
+	return reqHost[:len(reqHost)-len(s.localDomainSuffix)-1]
+}
+
+// setCustomUpstream sets custom upstream settings in pctx, if necessary.  l and
+// pctx must not be nil.
+func (s *Server) setCustomUpstream(
+	ctx context.Context,
+	l *slog.Logger,
+	pctx *proxy.DNSContext,
+	clientID string,
+) {
+	if !pctx.Addr.IsValid() || s.conf.ClientsContainer == nil {
+		return
+	}
+
+	cliAddr := pctx.Addr.Addr()
+	upsConf := s.conf.ClientsContainer.CustomUpstreamConfig(clientID, cliAddr)
+	if upsConf != nil {
+		l.DebugContext(
+			ctx,
+			"using custom upstreams for client with",
+			"ip", cliAddr,
+			"client_id", clientID,
+		)
+
+		pctx.CustomUpstreamConfig = upsConf
+	}
+}
+
+// Apply filtering logic after we have received response from upstream servers.
+// l and dctx must not be nil.
+func (s *Server) processFilteringAfterResponse(
+	ctx context.Context,
+	l *slog.Logger,
+	dctx *dnsContext,
+) (rc resultCode) {
+	l.DebugContext(ctx, "started processing filtering after response")
+	defer l.DebugContext(ctx, "finished processing filtering after response")
+
+	switch res := dctx.result; res.Reason {
+	case filtering.NotFilteredAllowList:
+		return resultCodeSuccess
+	case
+		filtering.Rewritten,
+		filtering.RewrittenRule,
+		filtering.FilteredSafeSearch:
+
+		if dctx.origQuestion.Name == "" {
+			// origQuestion is set in case we get only CNAME without IP from
+			// rewrites table.
+			return resultCodeSuccess
+		}
+
+		pctx := dctx.proxyCtx
+		pctx.Req.Question[0], pctx.Res.Question[0] = dctx.origQuestion, dctx.origQuestion
+
+		rr := s.genAnswerCNAME(pctx.Req, res.CanonName)
+		answer := append([]dns.RR{rr}, pctx.Res.Answer...)
+		pctx.Res.Answer = answer
+
+		return resultCodeSuccess
+	default:
+		return s.filterAfterResponse(ctx, l, dctx)
+	}
+}
+
+// filterAfterResponse returns the result of filtering the response that wasn't
+// explicitly allowed or rewritten.  l and dctx must not be nil.
+func (s *Server) filterAfterResponse(
+	ctx context.Context,
+	l *slog.Logger,
+	dctx *dnsContext,
+) (res resultCode) {
+	// Check the response only if it's from an upstream.  Don't check the
+	// response if the protection is disabled since dnsrewrite rules aren't
+	// applied to it anyway.
+	if !dctx.protectionEnabled || !dctx.responseFromUpstream {
+		return resultCodeSuccess
+	}
+
+	err := s.filterDNSResponse(ctx, l, dctx)
+	if err != nil {
+		dctx.err = err
+
+		return resultCodeError
+	}
+
+	return resultCodeSuccess
+}
