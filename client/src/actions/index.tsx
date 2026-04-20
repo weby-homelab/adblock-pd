@@ -752,6 +752,7 @@ export const toggleBlocking =
 
 export const toggleBlockingForClient = (type: any, domain: any, client: any) => {
     const escapedClientName = client
+        .replace(/\\/g, '\\\\')
         .replace(/'/g, "\\'")
         .replace(/"/g, '\\"')
         .replace(/,/g, '\\,')

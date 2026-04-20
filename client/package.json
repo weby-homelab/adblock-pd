@@ -120,5 +120,10 @@
       "firefox esr",
       "not ie < 9"
     ]
+  },
+  "overrides": {
+    "d3-color": "^3.1.0",
+    "node-fetch": "^2.6.7",
+    "serialize-javascript": "^7.0.5"
   }
 }
