@@ -71,8 +71,8 @@ const Footer = () => {
                 <a
                     target="_blank"
                     rel="noopener noreferrer"
-                    href="#action=home&from=ui&app=home">
-                    AdGuard
+                    href="https://github.com/weby-homelab/adblock-pd">
+                    ADBlock-PD
                 </a>
             </div>
         </div>
