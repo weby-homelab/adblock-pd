@@ -1120,5 +1120,3 @@ func (m *tlsManager) registerWebHandlers() {
 	m.httpReg.Register(http.MethodPost, "/control/tls/configure", m.handleTLSConfigure)
 	m.httpReg.Register(http.MethodPost, "/control/tls/validate", m.handleTLSValidate)
 }
-ttpReg.Register(http.MethodPost, "/control/tls/validate", m.handleTLSValidate)
-}
