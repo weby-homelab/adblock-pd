@@ -47,9 +47,6 @@ jobs:
         cd client
         npm ci --ignore-scripts
         npm run build-prod
-        cd ..
-        rm -rf build/*
-        cp -R client/build/* build/ || true
 
     - name: Build Backend (Go)
       if: matrix.language == 'go'
