@@ -130,55 +130,11 @@ flowchart TD
 
 ---
 
-## 🚀 Швидкий запуск (Через Docker)
+## 🚀 Запуск та Налаштування
 
-Оптимальний спосіб розгортання — використання Docker.
+Для правильного розгортання проєкту (запуск Docker, проходження майстра налаштування та встановлення SSL-сертифікатів для DoH/DoT/DoQ), будь ласка, ознайомтеся з нашим детальним посібником:
 
-### Варіант 1: Командний рядок Docker
-
-```bash
-docker run -d --name adblock-pd \
-  -v $(pwd)/data:/opt/adblock-pd/data \
-  -v $(pwd)/conf:/opt/adblock-pd/conf \
-  -p 53:53/udp -p 53:53/tcp \
-  -p 80:80/tcp -p 3000:3000/tcp \
-  -p 443:443/tcp -p 443:443/udp \
-  -p 853:853/tcp -p 853:853/udp \
-  --restart always \
-  webyhomelab/adblock-pd:latest
-```
-
-### Варіант 2: Docker Compose
-
-Створіть файл `docker-compose.yml`:
-
-```yaml
-version: "3.8"
-services:
-  adblock-pd:
-    image: webyhomelab/adblock-pd:latest
-    container_name: adblock-pd
-    restart: always
-    ports:
-      - "53:53/tcp"
-      - "53:53/udp"
-      - "80:80/tcp"        # Веб-інтерфейс керування
-      - "3000:3000/tcp"    # Майстер початкового налаштування
-      - "443:443/tcp"      # DoH / HTTPS
-      - "443:443/udp"      # HTTP/3
-      - "853:853/tcp"      # DoT
-      - "853:853/udp"      # DoQ
-    volumes:
-      - ./data:/opt/adblock-pd/data
-      - ./conf:/opt/adblock-pd/conf
-```
-
-Запуск:
-```bash
-docker-compose up -d
-```
-
-> **Важливо:** Після першого запуску перейдіть за адресою `http://<ваша-ip-адреса>:3000` для проходження майстра початкового налаштування. 
+📖 **[Повний посібник зі встановлення (INSTRUCTIONS_INSTALL.md)](INSTRUCTIONS_INSTALL.md)**
 
 ---
 

@@ -130,55 +130,11 @@ The final Docker image is based on `debian:bullseye-slim`. The service runs as a
 
 ---
 
-## 🚀 Quick Start (Docker)
+## 🚀 Deployment & Configuration
 
-The recommended way to deploy ADBlock-PD is via Docker.
+For a proper deployment (running Docker, completing the setup wizard, and installing SSL certificates for DoH/DoT/DoQ), please refer to our detailed guide:
 
-### Option 1: Docker CLI
-
-```bash
-docker run -d --name adblock-pd \
-  -v $(pwd)/data:/opt/adblock-pd/data \
-  -v $(pwd)/conf:/opt/adblock-pd/conf \
-  -p 53:53/udp -p 53:53/tcp \
-  -p 80:80/tcp -p 3000:3000/tcp \
-  -p 443:443/tcp -p 443:443/udp \
-  -p 853:853/tcp -p 853:853/udp \
-  --restart always \
-  webyhomelab/adblock-pd:latest
-```
-
-### Option 2: Docker Compose
-
-Create a `docker-compose.yml` file:
-
-```yaml
-version: "3.8"
-services:
-  adblock-pd:
-    image: webyhomelab/adblock-pd:latest
-    container_name: adblock-pd
-    restart: always
-    ports:
-      - "53:53/tcp"
-      - "53:53/udp"
-      - "80:80/tcp"        # Web Admin
-      - "3000:3000/tcp"    # Initial Setup Wizard
-      - "443:443/tcp"      # DoH / HTTPS
-      - "443:443/udp"      # HTTP/3
-      - "853:853/tcp"      # DoT
-      - "853:853/udp"      # DoQ
-    volumes:
-      - ./data:/opt/adblock-pd/data
-      - ./conf:/opt/adblock-pd/conf
-```
-
-Run it:
-```bash
-docker-compose up -d
-```
-
-> **Note:** After the first launch, navigate to `http://<your-ip>:3000` to complete the initial setup wizard.
+📖 **[Complete Installation Guide (INSTRUCTIONS_INSTALL_ENG.md)](INSTRUCTIONS_INSTALL_ENG.md)**
 
 ---
 
