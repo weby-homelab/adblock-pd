@@ -171,7 +171,7 @@ func (web *webAPI) handleLogin(w http.ResponseWriter, r *http.Request) {
 		logIP = ip.String()
 	}
 
-	cookie, err := newCookie(ctx, web.auth, req, remoteIPStr)
+	cookie, err := newCookie(ctx, web.auth, req, remoteIPStr, r.TLS != nil || r.Header.Get("X-Forwarded-Proto") == "https")
 	if err != nil {
 		writeErrorWithIP(r, w, http.StatusForbidden, logIP, "%s", err)
 
@@ -196,6 +196,7 @@ func newCookie(
 	auth *auth,
 	req loginJSON,
 	addr string,
+	isSecure bool,
 ) (c *http.Cookie, err error) {
 	user, err := auth.users.ByLogin(ctx, aghuser.Login(req.Name))
 	if err != nil {
@@ -230,6 +231,7 @@ func newCookie(
 		Path:     "/",
 		Expires:  time.Now().Add(cookieTTL),
 		HttpOnly: true,
+		Secure:   isSecure,
 		SameSite: http.SameSiteLaxMode,
 	}, nil
 }

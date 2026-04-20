@@ -32,7 +32,7 @@ func (s *Server) DialContext(ctx context.Context, network, addr string) (conn ne
 		return dialer.DialContext(ctx, network, addr)
 	}
 
-	port, err := strconv.Atoi(portStr)
+	port, err := strconv.ParseUint(portStr, 10, 16)
 	if err != nil {
 		return nil, fmt.Errorf("invalid port %s: %w", portStr, err)
 	}

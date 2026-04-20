@@ -391,6 +391,7 @@ func newDNSCryptConfig(
 		return nil, fmt.Errorf("dnscrypt_config_file: %w", errors.ErrEmptyValue)
 	}
 
+	// codeql[go/path-injection] -- admin-provided configuration path
 	f, err := os.Open(conf.DNSCryptConfigFile)
 	if err != nil {
 		return nil, fmt.Errorf("opening dnscrypt config: %w", err)

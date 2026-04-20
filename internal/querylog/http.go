@@ -414,14 +414,12 @@ func (l *queryLog) parseSearchParams(
 		}
 	}
 
-	var limit64 int64
-	if limit64, err = strconv.ParseInt(q.Get("limit"), 10, 64); err == nil {
-		p.limit = int(limit64)
+	if limit, err := strconv.Atoi(q.Get("limit")); err == nil {
+		p.limit = limit
 	}
 
-	var offset64 int64
-	if offset64, err = strconv.ParseInt(q.Get("offset"), 10, 64); err == nil {
-		p.offset = int(offset64)
+	if offset, err := strconv.Atoi(q.Get("offset")); err == nil {
+		p.offset = offset
 
 		// If we don't use "olderThan" and use offset/limit instead, we should change the default behavior
 		// and scan all log records until we found enough log entries

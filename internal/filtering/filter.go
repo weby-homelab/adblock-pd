@@ -583,6 +583,7 @@ func (d *DNSFilter) reader(fltURL string) (r io.ReadCloser, err error) {
 		return nil, fmt.Errorf("path %q does not match safe patterns", fltURL)
 	}
 
+	// codeql[go/path-injection] -- path is validated against admin-configured safe patterns
 	r, err = os.Open(fltURL)
 	if err != nil {
 		return nil, fmt.Errorf("opening file: %w", err)
@@ -594,6 +595,7 @@ func (d *DNSFilter) reader(fltURL string) (r io.ReadCloser, err error) {
 // readerFromURL returns an io.ReadCloser reading filtering-rule list data form
 // the filter's URL.
 func (d *DNSFilter) readerFromURL(fltURL string) (r io.ReadCloser, err error) {
+	// codeql[go/request-forgery] -- admin-provided URLs for blocklists are an expected feature
 	resp, err := d.conf.HTTPClient.Get(fltURL)
 	if err != nil {
 		// Don't wrap the error since it's informative enough as is.

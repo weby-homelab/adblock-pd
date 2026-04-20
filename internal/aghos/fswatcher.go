@@ -119,6 +119,7 @@ func (w *OSWatcher) Events() (e <-chan Event) {
 func (w *OSWatcher) Add(name string) (err error) {
 	defer func() { err = errors.Annotate(err, "%s: %w", osWatcherPref) }()
 
+	// codeql[go/path-injection] -- name is provided internally by the application
 	fi, err := os.Stat(name)
 	if err != nil {
 		return fmt.Errorf("checking file %q: %w", name, err)

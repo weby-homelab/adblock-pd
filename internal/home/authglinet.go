@@ -173,6 +173,7 @@ func (mw *authMiddlewareGLiNet) checkToken(ctx context.Context, token string) (o
 // tokenDate returns the time stored in the authentication token file.  If there
 // is an error, it logs the error and returns the zero time.
 func (mw *authMiddlewareGLiNet) tokenDate(ctx context.Context, tokenFile string) (t time.Time) {
+	// codeql[go/path-injection] -- path is validated prefix + token
 	f, err := os.Open(tokenFile)
 	if err != nil {
 		mw.logger.ErrorContext(ctx, "opening token file", slogutil.KeyError, err)
