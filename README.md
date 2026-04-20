@@ -36,6 +36,59 @@
 
 Ваш DNS-сервер повинен належати лише вам. Ніякого збору даних, жодних прихованих запитів, жодного завантаження стороннього коду без вашого відома.
 
+### 🏗️ Архітектура (Architecture)
+
+```mermaid
+graph TD
+    %% Styling
+    classDef client fill:#0072ff,stroke:#00d4ff,stroke-width:2px,color:#fff,font-weight:bold,rx:10,ry:10;
+    classDef server fill:#1a1a2e,stroke:#00d4ff,stroke-width:3px,color:#fff,font-weight:bold,rx:15,ry:15;
+    classDef filter fill:#ff4d00,stroke:#ff8c00,stroke-width:2px,color:#fff,font-weight:bold,rx:10,ry:10;
+    classDef block fill:#e84545,stroke:#903749,stroke-width:2px,color:#fff,stroke-dasharray: 5 5,rx:10,ry:10;
+    classDef upstream fill:#16c79a,stroke:#11999e,stroke-width:2px,color:#fff,font-weight:bold,rx:10,ry:10;
+    classDef subg fill:none,stroke:#444,stroke-width:1px,stroke-dasharray: 5 5;
+
+    %% Components
+    subgraph Clients ["📱 Ваші пристрої (Your Devices)"]
+        C1("💻 Laptop") ::: client
+        C2("📱 Smartphone") ::: client
+        C3("📺 Smart TV / IoT") ::: client
+    end
+
+    subgraph ADBlock_PD ["🛡️ ADBlock-PD (Docker: debian-slim)"]
+        direction TB
+        Proto["🔒 DoH / DoT / DoQ"]:::server
+        Engine["⚡ DNS & Filtering Engine"]:::server
+        Proto --> Engine
+        
+        subgraph Hardening ["🔒 Security & Hardening"]
+            H1["🔇 Zero Telemetry"]
+            H2["🚀 No Updater (Anti-RCE)"]
+            H3["🔄 Auto-Heal (Healthcheck)"]
+        end
+        Engine -.-> Hardening
+    end
+
+    subgraph Logic ["⚙️ Filtering Logic"]
+        direction LR
+        Rules["🛑 Blocklists & Rules"]:::filter
+    end
+
+    subgraph Outcomes ["🌐 Роздільна здатність (Resolution)"]
+        Null["🕳️ Blackhole (0.0.0.0)"]:::block
+        U1["🌍 Upstream (Cloudflare/ControlD)"]:::upstream
+    end
+
+    %% Connections
+    C1 -->|Encrypted DNS| Proto
+    C2 -->|Encrypted DNS| Proto
+    C3 -->|Plain/Encrypted| Proto
+
+    Engine ==> Logic
+    Logic =="Ads / Trackers / Phishing"==> Null
+    Logic =="Clean Traffic"==> U1
+```
+
 ## ✨ Ключові відмінності та посилення безпеки
 
 ### 🚀 Видалення модуля оновлень (Захист від віддаленого виконання коду)
