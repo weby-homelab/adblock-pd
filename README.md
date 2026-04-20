@@ -1,0 +1,132 @@
+<p align="center">
+  <a href="README_ENG.md">
+    <img src="https://img.shields.io/badge/🇬🇧_English-00D4FF?style=for-the-badge&logo=readme&logoColor=white" alt="English README">
+  </a>
+  <a href="README.md">
+    <img src="https://img.shields.io/badge/🇺🇦_Українська-FF4D00?style=for-the-badge&logo=readme&logoColor=white" alt="Українська версія">
+  </a>
+</p>
+
+<br>
+
+# 🛡️ ADBlock-Private-DNS (ADBlock-PD)
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/weby-homelab/adblock-pd/master/logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/weby-homelab/adblock-pd/master/logo-light.svg">
+    <img alt="Логотип ADBlock-PD" src="https://raw.githubusercontent.com/weby-homelab/adblock-pd/master/logo-light.svg" width="400">
+  </picture>
+</p>
+
+<p align="center">
+  <em>Ультимативний, жорстко захищений форк популярного DNS-сервера для тих, хто вимагає абсолютної приватності.</em>
+</p>
+
+<p align="center">
+  <a href="https://hub.docker.com/r/webyhomelab/adblock-pd"><img src="https://img.shields.io/docker/pulls/webyhomelab/adblock-pd?style=for-the-badge&logo=docker&color=00d4ff" alt="Завантаження з Docker"></a>
+  <a href="https://github.com/weby-homelab/adblock-pd/releases/latest"><img src="https://img.shields.io/github/v/release/weby-homelab/adblock-pd?style=for-the-badge&logo=github&color=0072ff" alt="Останній реліз"></a>
+  <a href="https://github.com/weby-homelab/adblock-pd/blob/master/LICENSE.txt"><img src="https://img.shields.io/badge/Ліцензія-GPL_v3-blue.svg?style=for-the-badge" alt="Ліцензія"></a>
+</p>
+
+---
+
+## 🎯 Що це таке?
+**ADBlock-Private-DNS (ADBlock-PD)** — це власна розробка на базі відомого DNS-сервера AdGuard Home (версії 0.107.74). Проєкт створений командою **Weby Homelab** з єдиною метою: **повністю усунути будь-які зв'язки з інфраструктурою початкових розробників та будь-якою іншою зовнішньою мережею**. Ми взяли потужний рушій фільтрації та провели його повну "стерилізацію". 
+
+Ваш DNS-сервер повинен належати лише вам. Ніякого збору даних, жодних прихованих запитів, жодного завантаження стороннього коду без вашого відома.
+
+## ✨ Ключові відмінності та посилення безпеки
+
+### 🚀 Видалення модуля оновлень (Захист від віддаленого виконання коду)
+Оригінальний модуль `internal/updater` фізично видалено з вихідного коду. Сервер **ніколи** не буде звертатися до сторонніх серверів для перевірки оновлень. Це ліквідує потенційний шлях віддаленого виконання коду через підміну файлів оновлень або злам інфраструктури розробника.
+
+### 🔒 Захист DNS та відсутність прихованих підключень
+- **Безпечний перегляд та Батьківський контроль:** В оригіналі ці функції надсилають часткові дані ваших запитів на зовнішні сервери. В **ADBlock-PD** ці адреси жорстко стерті, а запити перенаправляються на локальну адресу `127.0.0.1`. Функції повністю ізольовані.
+- **Конфіденційність WHOIS:** Вбудований інструмент запитів WHOIS замінено на порожню "заглушку". IP-адреси пристроїв у вашій мережі більше не передаються зовнішнім сервірам.
+
+### 🔇 Відсутність телеметрії та новий дизайн
+Усі посилання у веб-інтерфейсі, що вели на трекери, системи аналітики або зовнішню документацію, замінено на нейтральні заглушки. Проєкт отримав новий адаптивний векторний логотип та повністю незалежний зовнішній вигляд.
+
+### 🔄 Архітектура самовідновлення
+Контейнер оснащено вбудованою перевіркою стану (`HEALTHCHECK`) на базі утиліти `host`. Система кожні 30 секунд перевіряє життєздатність DNS-служби (`127.0.0.1:53`). Якщо служба "зависає", Docker автоматично її перезапускає, гарантуючи стабільний інтернет у вашій мережі.
+
+### 🐧 Легка та безпечна основа
+Фінальний образ Docker базується на мінімалістичній операційній системі `debian:bullseye-slim`. Служба запускається від імені звичайного користувача (`UID 10001`), з доданим параметром `--no-permcheck` для безпечного запуску в ізольованому середовищі Docker. За замовчуванням встановлено київський час (`Europe/Kyiv`).
+
+---
+
+## 🚀 Швидкий запуск (Через Docker)
+
+Оптимальний спосіб розгортання — використання Docker.
+
+### Варіант 1: Командний рядок Docker
+
+```bash
+docker run -d --name adblock-pd \
+  -v $(pwd)/data:/opt/adblock-pd/data \
+  -v $(pwd)/conf:/opt/adblock-pd/conf \
+  -p 53:53/udp -p 53:53/tcp \
+  -p 80:80/tcp -p 3000:3000/tcp \
+  -p 443:443/tcp -p 443:443/udp \
+  -p 853:853/tcp -p 853:853/udp \
+  --restart always \
+  webyhomelab/adblock-pd:latest
+```
+
+### Варіант 2: Docker Compose
+
+Створіть файл `docker-compose.yml`:
+
+```yaml
+version: "3.8"
+services:
+  adblock-pd:
+    image: webyhomelab/adblock-pd:latest
+    container_name: adblock-pd
+    restart: always
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "80:80/tcp"        # Веб-інтерфейс керування
+      - "3000:3000/tcp"    # Майстер початкового налаштування
+      - "443:443/tcp"      # DoH / HTTPS
+      - "443:443/udp"      # HTTP/3
+      - "853:853/tcp"      # DoT
+      - "853:853/udp"      # DoQ
+    volumes:
+      - ./data:/opt/adblock-pd/data
+      - ./conf:/opt/adblock-pd/conf
+```
+
+Запуск:
+```bash
+docker-compose up -d
+```
+
+> **Важливо:** Після першого запуску перейдіть за адресою `http://<ваша-ip-адреса>:3000` для проходження майстра початкового налаштування. 
+
+---
+
+## 🛠 Збирання з вихідного коду
+
+Якщо ви хочете зібрати проєкт самостійно, вам знадобиться Docker (використовується багатоетапне збирання). 
+
+```bash
+git clone https://github.com/weby-homelab/adblock-pd.git
+cd adblock-pd
+docker build -t adblock-pd:local .
+```
+
+---
+
+## 📜 Ліцензія та Відмова від відповідальності
+
+Цей проєкт розповсюджується під ліцензією **GNU General Public License v3.0 (GPL-3.0)**. 
+Проєкт надається "ЯК Є". Команда Weby Homelab не несе відповідальності за будь-які збої в роботі мережі, втрату даних або інші наслідки використання цього програмного забезпечення.
+
+---
+<p align="center">
+  <b>Зроблено з ❤️ у Києві під звуки сирен та вимкнення світла.</b><br>
+  Weby Homelab - Безпека понад усе. Ваша приватність, ваші правила.
+</p>
