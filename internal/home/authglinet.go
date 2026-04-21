@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"slices"
+	"strings"
 	"time"
 
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
@@ -158,6 +159,11 @@ func (mw *authMiddlewareGLiNet) isAuthenticated(ctx context.Context, r *http.Req
 // the time stored in a file named after the token and checks if the token has
 // expired based on that time.
 func (mw *authMiddlewareGLiNet) checkToken(ctx context.Context, token string) (ok bool) {
+	if token == "" || strings.Contains(token, "/") || strings.Contains(token, "\\") {
+		mw.logger.DebugContext(ctx, "invalid authentication token format")
+		return false
+	}
+
 	tokenFile := mw.tokenFilePrefix + token
 	tokenDate := mw.tokenDate(ctx, tokenFile)
 	now := mw.clock.Now()

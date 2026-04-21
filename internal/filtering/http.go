@@ -28,15 +28,16 @@ func (d *DNSFilter) validateFilterURL(urlStr string) (err error) {
 
 	if filepath.IsAbs(urlStr) {
 		urlStr = filepath.Clean(urlStr)
+
+		if !pathMatchesAny(d.safeFSPatterns, urlStr) {
+			return fmt.Errorf("path %q does not match safe patterns", urlStr)
+		}
+
 		// codeql[go/path-injection] -- path is validated against admin-configured safe patterns below
 		_, err = os.Stat(urlStr)
 		if err != nil {
 			// Don't wrap the error since it's informative enough as is.
 			return err
-		}
-
-		if !pathMatchesAny(d.safeFSPatterns, urlStr) {
-			return fmt.Errorf("path %q does not match safe patterns", urlStr)
 		}
 
 		return nil

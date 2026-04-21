@@ -16,6 +16,7 @@ import (
 	"net/http"
 	"net/netip"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -182,7 +183,8 @@ func (m *tlsManager) setCertFileTime(ctx context.Context) {
 	}
 
 	// codeql[go/path-injection] -- path is validated against admin configuration
-	fi, err := os.Stat(m.conf.CertificatePath)
+	cleanPath := filepath.Clean(m.conf.CertificatePath)
+	fi, err := os.Stat(cleanPath)
 	if err != nil {
 		m.logger.ErrorContext(ctx, "looking up certificate path", slogutil.KeyError, err)
 
@@ -362,7 +364,8 @@ func loadCertificateChainData(tlsConf *tlsConfigSettings) (err error) {
 			return errors.Error("certificate data and file can't be set together")
 		}
 
-		tlsConf.CertificateChainData, err = os.ReadFile(tlsConf.CertificatePath)
+		cleanPath := filepath.Clean(tlsConf.CertificatePath)
+		tlsConf.CertificateChainData, err = os.ReadFile(cleanPath)
 		if err != nil {
 			return fmt.Errorf("reading cert file: %w", err)
 		}
@@ -381,7 +384,8 @@ func loadPrivateKeyData(tlsConf *tlsConfigSettings) (err error) {
 			return errors.Error("private key data and file can't be set together")
 		}
 
-		tlsConf.PrivateKeyData, err = os.ReadFile(tlsConf.PrivateKeyPath)
+		cleanPath := filepath.Clean(tlsConf.PrivateKeyPath)
+		tlsConf.PrivateKeyData, err = os.ReadFile(cleanPath)
 		if err != nil {
 			return fmt.Errorf("reading key file: %w", err)
 		}

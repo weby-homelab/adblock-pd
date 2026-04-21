@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"net/http"
 	"net/netip"
+	"net/url"
 	"os"
 	"path/filepath"
 	"slices"
@@ -595,8 +596,17 @@ func (d *DNSFilter) reader(fltURL string) (r io.ReadCloser, err error) {
 // readerFromURL returns an io.ReadCloser reading filtering-rule list data form
 // the filter's URL.
 func (d *DNSFilter) readerFromURL(fltURL string) (r io.ReadCloser, err error) {
+	u, err := url.ParseRequestURI(fltURL)
+	if err != nil {
+		return nil, fmt.Errorf("parsing url: %w", err)
+	}
+
+	if u.Scheme != "http" && u.Scheme != "https" {
+		return nil, fmt.Errorf("unsupported url scheme: %q", u.Scheme)
+	}
+
 	// codeql[go/request-forgery] -- admin-provided URLs for blocklists are an expected feature
-	resp, err := d.conf.HTTPClient.Get(fltURL)
+	resp, err := d.conf.HTTPClient.Get(u.String())
 	if err != nil {
 		// Don't wrap the error since it's informative enough as is.
 		return nil, err
