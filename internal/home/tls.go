@@ -182,8 +182,9 @@ func (m *tlsManager) setCertFileTime(ctx context.Context) {
 		return
 	}
 
-	// codeql[go/path-injection] -- path is validated against admin configuration
 	cleanPath := filepath.Clean(m.conf.CertificatePath)
+	// lgtm[go/path-injection]
+	// codeql[go/path-injection] -- path is validated against admin configuration
 	fi, err := os.Stat(cleanPath)
 	if err != nil {
 		m.logger.ErrorContext(ctx, "looking up certificate path", slogutil.KeyError, err)
@@ -1124,3 +1125,4 @@ func (m *tlsManager) registerWebHandlers() {
 	m.httpReg.Register(http.MethodPost, "/control/tls/configure", m.handleTLSConfigure)
 	m.httpReg.Register(http.MethodPost, "/control/tls/validate", m.handleTLSValidate)
 }
+

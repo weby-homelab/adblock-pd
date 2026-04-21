@@ -605,6 +605,7 @@ func (d *DNSFilter) readerFromURL(fltURL string) (r io.ReadCloser, err error) {
 		return nil, fmt.Errorf("unsupported url scheme: %q", u.Scheme)
 	}
 
+	// lgtm[go/request-forgery]
 	// codeql[go/request-forgery] -- admin-provided URLs for blocklists are an expected feature
 	resp, err := d.conf.HTTPClient.Get(u.String())
 	if err != nil {

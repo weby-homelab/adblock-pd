@@ -33,6 +33,7 @@ func (d *DNSFilter) validateFilterURL(urlStr string) (err error) {
 			return fmt.Errorf("path %q does not match safe patterns", urlStr)
 		}
 
+		// lgtm[go/path-injection]
 		// codeql[go/path-injection] -- path is validated against admin-configured safe patterns below
 		_, err = os.Stat(urlStr)
 		if err != nil {
