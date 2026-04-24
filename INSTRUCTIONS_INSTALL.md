@@ -7,7 +7,7 @@
 ## 🏗️ Процес розгортання (Deployment Flow)
 
 ```mermaid
-flowchart TD
+flowchart LR
     classDef step fill:#0072ff,stroke:#00d4ff,stroke-width:2px,color:#fff,font-weight:bold,rx:10,ry:10;
     classDef config fill:#f0a500,stroke:#cf7500,stroke-width:2px,color:#fff,font-weight:bold,rx:10,ry:10;
     classDef ssl fill:#16c79a,stroke:#11999e,stroke-width:2px,color:#fff,font-weight:bold,rx:10,ry:10;
