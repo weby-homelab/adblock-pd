@@ -18,7 +18,7 @@ dns:
   filtering_enabled: true
   encryption_config:
     enabled: true
-    server_name: srvrs.online
+    server_name: example-dns.com
     force_https: true
     port_https: 443
     port_dns_over_tls: 853
@@ -27,7 +27,7 @@ dns:
 
 tls:
   enabled: true
-  server_name: srvrs.online
+  server_name: example-dns.com
   force_https: true
   port_https: 443
   port_dns_over_tls: 853
@@ -52,7 +52,7 @@ filters:
     id: 1765389518
 
 user_rules:
-  - '@@||srvrs.online^$important'
+  - '@@||example-dns.com^$important'
   - '||gov.ru^$important'
   - '||rt.com^$important'
   - '||yandex.ru^$important'
@@ -64,14 +64,14 @@ clients:
     arp: true
     rdns: true
   persistent:
-    - name: A52
-      ids: ["a52"]
-    - name: A6
-      ids: ["a6"]
-    - name: RMN
-      ids: ["176.37.242.89"]
-    - name: RealME 6
-      ids: ["realme-6"]
+    - name: Phone-1
+      ids: ["phone-1"]
+    - name: Tablet
+      ids: ["tablet"]
+    - name: Desktop
+      ids: ["203.0.113.15"]
+    - name: Phone-2
+      ids: ["phone-2"]
 
 # Security Mandate: No phone home
 filtering:
