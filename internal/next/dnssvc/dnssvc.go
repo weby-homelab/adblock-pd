@@ -13,9 +13,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghnet"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghslog"
-	"github.com/AdguardTeam/ADBlock-PD/internal/next/agh"
+	"github.com/weby-homelab/adblock-pd/internal/aghnet"
+	"github.com/weby-homelab/adblock-pd/internal/aghslog"
+	"github.com/weby-homelab/adblock-pd/internal/next/agh"
 	"github.com/AdguardTeam/dnsproxy/proxy"
 	"github.com/AdguardTeam/dnsproxy/ratelimit"
 	"github.com/AdguardTeam/dnsproxy/upstream"

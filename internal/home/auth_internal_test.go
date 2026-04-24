@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghuser"
+	"github.com/weby-homelab/adblock-pd/internal/aghuser"
 	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

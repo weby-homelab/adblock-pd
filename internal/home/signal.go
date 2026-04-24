@@ -7,8 +7,8 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghtls"
-	"github.com/AdguardTeam/ADBlock-PD/internal/client"
+	"github.com/weby-homelab/adblock-pd/internal/aghtls"
+	"github.com/weby-homelab/adblock-pd/internal/client"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/osutil"
 )

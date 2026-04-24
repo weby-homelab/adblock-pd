@@ -3,7 +3,7 @@
 package ossvc
 
 import (
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghos"
+	"github.com/weby-homelab/adblock-pd/internal/aghos"
 	"github.com/kardianos/service"
 )
 
@@ -170,7 +170,7 @@ exit 0
 `
 
 // OpenWrt procd init script
-// https://github.com/AdguardTeam/ADBlock-PD/internal/issues/1386
+// https://github.com/weby-homelab/adblock-pd/internal/issues/1386
 const openWrtScript = `#!/bin/sh /etc/rc.common
 
 USE_PROCD=1

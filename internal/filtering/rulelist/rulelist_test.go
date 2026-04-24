@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/filtering/rulelist"
+	"github.com/weby-homelab/adblock-pd/internal/filtering/rulelist"
 	"github.com/AdguardTeam/golibs/netutil/urlutil"
 	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/AdguardTeam/urlfilter/rules"
@@ -39,7 +39,7 @@ const (
 
 	// testRuleTextCosmetic is a cosmetic rule with a zero-width non-joiner.
 	//
-	// See https://github.com/AdguardTeam/ADBlock-PD/issues/6003.
+	// See https://github.com/weby-homelab/adblock-pd/issues/6003.
 	testRuleTextCosmetic = "||cosmetic.example## :has-text(/\u200c/i)\n"
 )
 

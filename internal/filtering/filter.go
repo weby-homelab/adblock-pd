@@ -15,9 +15,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghos"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghrenameio"
-	"github.com/AdguardTeam/ADBlock-PD/internal/filtering/rulelist"
+	"github.com/weby-homelab/adblock-pd/internal/aghos"
+	"github.com/weby-homelab/adblock-pd/internal/aghrenameio"
+	"github.com/weby-homelab/adblock-pd/internal/filtering/rulelist"
 	"github.com/AdguardTeam/golibs/container"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"

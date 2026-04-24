@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/configmigrate"
-	"github.com/AdguardTeam/ADBlock-PD/internal/version"
+	"github.com/weby-homelab/adblock-pd/internal/configmigrate"
+	"github.com/weby-homelab/adblock-pd/internal/version"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/osutil"
 	"github.com/AdguardTeam/golibs/stringutil"

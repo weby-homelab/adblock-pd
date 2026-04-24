@@ -7,9 +7,9 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghos"
-	"github.com/AdguardTeam/ADBlock-PD/internal/ossvc"
-	"github.com/AdguardTeam/ADBlock-PD/internal/version"
+	"github.com/weby-homelab/adblock-pd/internal/aghos"
+	"github.com/weby-homelab/adblock-pd/internal/ossvc"
+	"github.com/weby-homelab/adblock-pd/internal/version"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/netutil/urlutil"

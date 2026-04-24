@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/whois"
+	"github.com/weby-homelab/adblock-pd/internal/whois"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/testutil/fakenet"
 	"github.com/stretchr/testify/assert"

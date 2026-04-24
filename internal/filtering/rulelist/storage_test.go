@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/filtering/rulelist"
+	"github.com/weby-homelab/adblock-pd/internal/filtering/rulelist"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/c2h5oh/datasize"

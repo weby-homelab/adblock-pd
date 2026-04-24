@@ -9,9 +9,9 @@ import (
 	"slices"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghhttp"
-	"github.com/AdguardTeam/ADBlock-PD/internal/filtering/rulelist"
-	"github.com/AdguardTeam/ADBlock-PD/internal/schedule"
+	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
+	"github.com/weby-homelab/adblock-pd/internal/filtering/rulelist"
+	"github.com/weby-homelab/adblock-pd/internal/schedule"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/validate"

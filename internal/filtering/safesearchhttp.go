@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghhttp"
+	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
 )
 
 // handleSafeSearchEnable is the handler for POST /control/safesearch/enable

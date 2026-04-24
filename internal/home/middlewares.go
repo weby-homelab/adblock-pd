@@ -38,8 +38,8 @@ const (
 // that are designed to expect large files and requests.  Remove once the new,
 // better APIs are up.
 //
-// See https://github.com/AdguardTeam/ADBlock-PD/issues/2666 and
-// https://github.com/AdguardTeam/ADBlock-PD/issues/2675.
+// See https://github.com/weby-homelab/adblock-pd/issues/2666 and
+// https://github.com/weby-homelab/adblock-pd/issues/2675.
 func expectsLargerRequests(r *http.Request) (ok bool) {
 	if r.Method != http.MethodPost {
 		return false

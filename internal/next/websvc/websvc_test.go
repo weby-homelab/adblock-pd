@@ -12,9 +12,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/next/agh"
-	"github.com/AdguardTeam/ADBlock-PD/internal/next/dnssvc"
-	"github.com/AdguardTeam/ADBlock-PD/internal/next/websvc"
+	"github.com/weby-homelab/adblock-pd/internal/next/agh"
+	"github.com/weby-homelab/adblock-pd/internal/next/dnssvc"
+	"github.com/weby-homelab/adblock-pd/internal/next/websvc"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/netutil/httputil"
 	"github.com/AdguardTeam/golibs/netutil/urlutil"

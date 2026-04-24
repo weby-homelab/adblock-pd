@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghhttp"
+	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
 )
 
 // Theme is an enum of all allowed UI themes.

@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghnet"
+	"github.com/weby-homelab/adblock-pd/internal/aghnet"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/ioutil"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"

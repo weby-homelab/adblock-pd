@@ -7,9 +7,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghnet"
-	"github.com/AdguardTeam/ADBlock-PD/internal/rdns"
-	"github.com/AdguardTeam/ADBlock-PD/internal/whois"
+	"github.com/weby-homelab/adblock-pd/internal/aghnet"
+	"github.com/weby-homelab/adblock-pd/internal/rdns"
+	"github.com/weby-homelab/adblock-pd/internal/whois"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/netutil"

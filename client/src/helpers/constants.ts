@@ -60,17 +60,17 @@ export const STATUS_COLORS = {
 };
 
 export const REPOSITORY = {
-    URL: 'https://github.com/AdguardTeam/ADBlock-PD',
-    TRACKERS_DB: 'https://github.com/AdguardTeam/ADBlock-PD/tree/master/client/src/helpers/trackers/trackers.json',
-    ISSUES: 'https://github.com/AdguardTeam/ADBlock-PD/issues/new/choose',
+    URL: 'https://github.com/weby-homelab/adblock-pd',
+    TRACKERS_DB: 'https://github.com/weby-homelab/adblock-pd/tree/master/client/src/helpers/trackers/trackers.json',
+    ISSUES: 'https://github.com/weby-homelab/adblock-pd/issues/new/choose',
 };
 
-export const CLIENT_ID_LINK = 'https://github.com/AdguardTeam/ADBlock-PD/wiki/Clients#clientid';
-export const MANUAL_UPDATE_LINK = 'https://github.com/AdguardTeam/ADBlock-PD/wiki/FAQ#manual-update';
-export const PORT_53_FAQ_LINK = 'https://github.com/AdguardTeam/ADBlock-PD/wiki/FAQ#bindinuse';
+export const CLIENT_ID_LINK = 'https://github.com/weby-homelab/adblock-pd/wiki/Clients#clientid';
+export const MANUAL_UPDATE_LINK = 'https://github.com/weby-homelab/adblock-pd/wiki/FAQ#manual-update';
+export const PORT_53_FAQ_LINK = 'https://github.com/weby-homelab/adblock-pd/wiki/FAQ#bindinuse';
 export const PRIVACY_POLICY_LINK = '#action=privacy&from=ui&app=home';
 export const UPSTREAM_CONFIGURATION_WIKI_LINK =
-    'https://github.com/AdguardTeam/ADBlock-PD/wiki/Configuration#upstreams';
+    'https://github.com/weby-homelab/adblock-pd/wiki/Configuration#upstreams';
 
 export const FILTERS_RELATIVE_LINK = '#filters';
 

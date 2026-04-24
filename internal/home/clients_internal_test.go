@@ -3,10 +3,10 @@ package home
 import (
 	"testing"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/agh"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghhttp"
-	"github.com/AdguardTeam/ADBlock-PD/internal/client"
-	"github.com/AdguardTeam/ADBlock-PD/internal/filtering"
+	"github.com/weby-homelab/adblock-pd/internal/agh"
+	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
+	"github.com/weby-homelab/adblock-pd/internal/client"
+	"github.com/weby-homelab/adblock-pd/internal/filtering"
 	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/stretchr/testify/require"
 )

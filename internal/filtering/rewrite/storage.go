@@ -168,7 +168,7 @@ func (s *DefaultStorage) resolveCNAMEChain(
 //
 // For example, an "*.example.com → sub.example.com" rewrite matching in a loop.
 //
-// See https://github.com/AdguardTeam/ADBlock-PD/issues/4016.
+// See https://github.com/weby-homelab/adblock-pd/issues/4016.
 func isSelfMatchingWildcard(host, rwAns, ruleText string) (ok bool) {
 	return host == rwAns && isWildcard(ruleText)
 }

@@ -55,7 +55,7 @@ func toDBLease(l *Lease) (dl *dbLease) {
 		// The front-end is waiting for RFC 3999 format of the time value.  It
 		// also shouldn't got an Expiry field for static leases.
 		//
-		// See https://github.com/AdguardTeam/ADBlock-PD/issues/2692.
+		// See https://github.com/weby-homelab/adblock-pd/issues/2692.
 		expiryStr = l.Expiry.Format(time.RFC3339)
 	}
 

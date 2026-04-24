@@ -46,7 +46,7 @@ export const Login = () => {
                             <Trans
                                 components={[
                                     <a
-                                        href="https://github.com/AdguardTeam/ADBlock-PD/wiki/Configuration#password-reset"
+                                        href="https://github.com/weby-homelab/adblock-pd/wiki/Configuration#password-reset"
                                         key="0"
                                         target="_blank"
                                         rel="noopener noreferrer">

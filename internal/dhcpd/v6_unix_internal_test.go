@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/dhcpsvc"
+	"github.com/weby-homelab/adblock-pd/internal/dhcpsvc"
 	"github.com/insomniacslk/dhcp/dhcpv6"
 	"github.com/insomniacslk/dhcp/iana"
 	"github.com/stretchr/testify/assert"

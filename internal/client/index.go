@@ -8,7 +8,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghalg"
+	"github.com/weby-homelab/adblock-pd/internal/aghalg"
 )
 
 // macKey contains MAC as byte array of 6, 8, or 20 bytes.

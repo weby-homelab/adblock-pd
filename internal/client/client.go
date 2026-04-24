@@ -10,7 +10,7 @@ import (
 	"net/netip"
 	"slices"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/whois"
+	"github.com/weby-homelab/adblock-pd/internal/whois"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/netutil"
 )

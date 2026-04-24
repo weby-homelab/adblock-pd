@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/dnsforward"
-	"github.com/AdguardTeam/ADBlock-PD/internal/filtering"
+	"github.com/weby-homelab/adblock-pd/internal/dnsforward"
+	"github.com/weby-homelab/adblock-pd/internal/filtering"
 	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/AdguardTeam/golibs/timeutil"
 	"github.com/stretchr/testify/assert"

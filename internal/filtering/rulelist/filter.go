@@ -11,8 +11,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghos"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghrenameio"
+	"github.com/weby-homelab/adblock-pd/internal/aghos"
+	"github.com/weby-homelab/adblock-pd/internal/aghrenameio"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/ioutil"
 	"github.com/AdguardTeam/urlfilter/filterlist"

@@ -17,13 +17,13 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghnet"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghslog"
-	"github.com/AdguardTeam/ADBlock-PD/internal/client"
-	"github.com/AdguardTeam/ADBlock-PD/internal/filtering"
-	"github.com/AdguardTeam/ADBlock-PD/internal/querylog"
-	"github.com/AdguardTeam/ADBlock-PD/internal/rdns"
-	"github.com/AdguardTeam/ADBlock-PD/internal/stats"
+	"github.com/weby-homelab/adblock-pd/internal/aghnet"
+	"github.com/weby-homelab/adblock-pd/internal/aghslog"
+	"github.com/weby-homelab/adblock-pd/internal/client"
+	"github.com/weby-homelab/adblock-pd/internal/filtering"
+	"github.com/weby-homelab/adblock-pd/internal/querylog"
+	"github.com/weby-homelab/adblock-pd/internal/rdns"
+	"github.com/weby-homelab/adblock-pd/internal/stats"
 	"github.com/AdguardTeam/dnsproxy/proxy"
 	"github.com/AdguardTeam/dnsproxy/upstream"
 	"github.com/AdguardTeam/golibs/errors"
@@ -440,7 +440,7 @@ func hostFromPTR(
 		// Respect zero TTL records since some DNS servers use it to
 		// locally-resolved addresses.
 		//
-		// See https://github.com/AdguardTeam/ADBlock-PD/issues/6046.
+		// See https://github.com/weby-homelab/adblock-pd/issues/6046.
 		if ptr.Hdr.Ttl >= ttlSec {
 			host = ptr.Ptr
 			ttlSec = ptr.Hdr.Ttl
@@ -834,7 +834,7 @@ const srvClosedErr errors.Error = "server is closed"
 // proxy returns a pointer to the current DNS proxy instance.  If p is nil, the
 // server is closing.
 //
-// See https://github.com/AdguardTeam/ADBlock-PD/issues/3655.
+// See https://github.com/weby-homelab/adblock-pd/issues/3655.
 func (s *Server) proxy() (p *proxy.Proxy) {
 	s.serverLock.RLock()
 	defer s.serverLock.RUnlock()

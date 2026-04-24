@@ -1,4 +1,4 @@
-module github.com/AdguardTeam/ADBlock-PD
+module github.com/weby-homelab/adblock-pd
 
 go 1.24
 

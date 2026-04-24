@@ -38,8 +38,8 @@ This changelog should be merged into the main one once the next API matures enou
 
 - `--host` and `-p/--port` flags.  Use `--web-addr=host:port` to set an address on which to serve the Web UI.  `-h` is now an alias for `--help`, see above.
 
-[#2598]: https://github.com/AdguardTeam/ADBlock-PD/issues/2598
-[#2893]: https://github.com/AdguardTeam/ADBlock-PD/issues/2893
-[#2902]: https://github.com/AdguardTeam/ADBlock-PD/issues/2902
-[#4067]: https://github.com/AdguardTeam/ADBlock-PD/issues/4067
-[#5676]: https://github.com/AdguardTeam/ADBlock-PD/issues/5676
+[#2598]: https://github.com/weby-homelab/adblock-pd/issues/2598
+[#2893]: https://github.com/weby-homelab/adblock-pd/issues/2893
+[#2902]: https://github.com/weby-homelab/adblock-pd/issues/2902
+[#4067]: https://github.com/weby-homelab/adblock-pd/issues/4067
+[#5676]: https://github.com/weby-homelab/adblock-pd/issues/5676

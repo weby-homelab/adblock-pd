@@ -297,7 +297,7 @@ func (m *manager) parseIpsetConfig(ctx context.Context, ipsetConf []string) (err
 
 // ipsetProps returns the properties of an ipset with the given name.
 //
-// Additional header data query.  See https://github.com/AdguardTeam/ADBlock-PD/issues/6420.
+// Additional header data query.  See https://github.com/weby-homelab/adblock-pd/issues/6420.
 //
 // TODO(s.chzhen):  Use *props.
 func (m *manager) ipsetProps(name string) (p props, err error) {

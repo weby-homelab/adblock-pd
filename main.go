@@ -6,10 +6,10 @@ import (
 	"embed"
 	// Embed tzdata in binary.
 	//
-	// See https://github.com/AdguardTeam/ADBlock-PD/issues/6758
+	// See https://github.com/weby-homelab/adblock-pd/issues/6758
 	_ "time/tzdata"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/home"
+	"github.com/weby-homelab/adblock-pd/internal/home"
 )
 
 // Embed the prebuilt client here since we strive to keep .go files inside the

@@ -1,8 +1,8 @@
 package aghtest_test
 
 import (
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghtest"
-	"github.com/AdguardTeam/ADBlock-PD/internal/client"
+	"github.com/weby-homelab/adblock-pd/internal/aghtest"
+	"github.com/weby-homelab/adblock-pd/internal/client"
 )
 
 // type check

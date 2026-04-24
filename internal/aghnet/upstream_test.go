@@ -3,7 +3,7 @@ package aghnet_test
 import (
 	"testing"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghnet"
+	"github.com/weby-homelab/adblock-pd/internal/aghnet"
 	"github.com/stretchr/testify/assert"
 )
 

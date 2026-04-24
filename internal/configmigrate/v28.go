@@ -3,7 +3,7 @@ package configmigrate
 import (
 	"context"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/dnsforward"
+	"github.com/weby-homelab/adblock-pd/internal/dnsforward"
 )
 
 // migrateTo28 performs the following changes:

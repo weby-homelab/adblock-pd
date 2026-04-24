@@ -13,12 +13,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/agh"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghhttp"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghnet"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghslog"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghtls"
-	"github.com/AdguardTeam/ADBlock-PD/internal/client"
+	"github.com/weby-homelab/adblock-pd/internal/agh"
+	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
+	"github.com/weby-homelab/adblock-pd/internal/aghnet"
+	"github.com/weby-homelab/adblock-pd/internal/aghslog"
+	"github.com/weby-homelab/adblock-pd/internal/aghtls"
+	"github.com/weby-homelab/adblock-pd/internal/client"
 	"github.com/AdguardTeam/dnsproxy/proxy"
 	"github.com/AdguardTeam/dnsproxy/ratelimit"
 	"github.com/AdguardTeam/dnsproxy/upstream"
@@ -843,7 +843,7 @@ func (s *Server) UpdatedProtectionStatus(
 	// relatively rare situation, do not lock s.serverLock for writing, as that
 	// can lead to freezes.
 	//
-	// See https://github.com/AdguardTeam/ADBlock-PD/issues/5661.
+	// See https://github.com/weby-homelab/adblock-pd/issues/5661.
 	if s.protectionUpdateInProgress.CompareAndSwap(false, true) {
 		go s.enableProtectionAfterPause(ctx)
 	}

@@ -3,7 +3,7 @@ package dnsforward
 import (
 	"net/netip"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/client"
+	"github.com/weby-homelab/adblock-pd/internal/client"
 	"github.com/AdguardTeam/dnsproxy/proxy"
 )
 

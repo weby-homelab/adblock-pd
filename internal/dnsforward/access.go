@@ -8,8 +8,8 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghhttp"
-	"github.com/AdguardTeam/ADBlock-PD/internal/client"
+	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
+	"github.com/weby-homelab/adblock-pd/internal/client"
 	"github.com/AdguardTeam/golibs/container"
 	"github.com/AdguardTeam/golibs/stringutil"
 	"github.com/AdguardTeam/urlfilter"

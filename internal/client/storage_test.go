@@ -10,12 +10,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/arpdb"
-	"github.com/AdguardTeam/ADBlock-PD/internal/client"
-	"github.com/AdguardTeam/ADBlock-PD/internal/dhcpd"
-	"github.com/AdguardTeam/ADBlock-PD/internal/dhcpsvc"
-	"github.com/AdguardTeam/ADBlock-PD/internal/dnsforward"
-	"github.com/AdguardTeam/ADBlock-PD/internal/whois"
+	"github.com/weby-homelab/adblock-pd/internal/arpdb"
+	"github.com/weby-homelab/adblock-pd/internal/client"
+	"github.com/weby-homelab/adblock-pd/internal/dhcpd"
+	"github.com/weby-homelab/adblock-pd/internal/dhcpsvc"
+	"github.com/weby-homelab/adblock-pd/internal/dnsforward"
+	"github.com/weby-homelab/adblock-pd/internal/whois"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/hostsfile"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
@@ -1359,7 +1359,7 @@ func BenchmarkFindParams_Set(b *testing.B) {
 	//
 	//	goos: linux
 	//	goarch: amd64
-	//	pkg: github.com/AdguardTeam/ADBlock-PD/internal/client
+	//	pkg: github.com/weby-homelab/adblock-pd/internal/client
 	//	cpu: Intel(R) Core(TM) i7-10510U CPU @ 1.80GHz
 	//	BenchmarkFindParams_Set/client_id-8         	49463488	        24.27 ns/op	       0 B/op	       0 allocs/op
 	//	BenchmarkFindParams_Set/ip_address-8        	18740977	        62.22 ns/op	       0 B/op	       0 allocs/op
@@ -1463,7 +1463,7 @@ func BenchmarkStorage_Find(b *testing.B) {
 	//
 	//	goos: linux
 	//	goarch: amd64
-	//	pkg: github.com/AdguardTeam/ADBlock-PD/internal/client
+	//	pkg: github.com/weby-homelab/adblock-pd/internal/client
 	//	cpu: Intel(R) Core(TM) i7-10510U CPU @ 1.80GHz
 	//	BenchmarkStorage_Find/client_id-8         	 7070107	       154.4 ns/op	     240 B/op	       2 allocs/op
 	//	BenchmarkStorage_Find/ip_address-8        	 6831823	       168.6 ns/op	     248 B/op	       2 allocs/op

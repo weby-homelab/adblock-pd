@@ -13,9 +13,9 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/configmigrate"
-	"github.com/AdguardTeam/ADBlock-PD/internal/next/configmgr"
-	"github.com/AdguardTeam/ADBlock-PD/internal/version"
+	"github.com/weby-homelab/adblock-pd/internal/configmigrate"
+	"github.com/weby-homelab/adblock-pd/internal/next/configmgr"
+	"github.com/weby-homelab/adblock-pd/internal/version"
 	"github.com/AdguardTeam/golibs/osutil"
 )
 

@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghtest"
-	"github.com/AdguardTeam/ADBlock-PD/internal/filtering/hashprefix"
+	"github.com/weby-homelab/adblock-pd/internal/aghtest"
+	"github.com/weby-homelab/adblock-pd/internal/filtering/hashprefix"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/netutil"
 	"github.com/AdguardTeam/golibs/testutil"
@@ -700,7 +700,7 @@ func BenchmarkSafeBrowsing(b *testing.B) {
 	//
 	//	goos: darwin
 	//	goarch: arm64
-	//	pkg: github.com/AdguardTeam/ADBlock-PD/internal/filtering
+	//	pkg: github.com/weby-homelab/adblock-pd/internal/filtering
 	//	cpu: Apple M3
 	//	BenchmarkSafeBrowsing-8   	  846363	      1280 ns/op	    1424 B/op	      41 allocs/op
 }
@@ -726,7 +726,7 @@ func BenchmarkSafeBrowsing_parallel(b *testing.B) {
 	//
 	//	goos: darwin
 	//	goarch: arm64
-	//	pkg: github.com/AdguardTeam/ADBlock-PD/internal/filtering
+	//	pkg: github.com/weby-homelab/adblock-pd/internal/filtering
 	//	cpu: Apple M3
 	//	BenchmarkSafeBrowsing_parallel-8   	 1040792	      1076 ns/op	    1472 B/op	      43 allocs/op
 }

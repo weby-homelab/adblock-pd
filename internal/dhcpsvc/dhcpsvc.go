@@ -8,7 +8,7 @@ import (
 	"net"
 	"net/netip"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/next/agh"
+	"github.com/weby-homelab/adblock-pd/internal/next/agh"
 )
 
 const (

@@ -7,13 +7,13 @@ import (
 	"net/http"
 	"net/netip"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghalg"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghhttp"
-	"github.com/AdguardTeam/ADBlock-PD/internal/client"
-	"github.com/AdguardTeam/ADBlock-PD/internal/filtering"
-	"github.com/AdguardTeam/ADBlock-PD/internal/filtering/safesearch"
-	"github.com/AdguardTeam/ADBlock-PD/internal/schedule"
-	"github.com/AdguardTeam/ADBlock-PD/internal/whois"
+	"github.com/weby-homelab/adblock-pd/internal/aghalg"
+	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
+	"github.com/weby-homelab/adblock-pd/internal/client"
+	"github.com/weby-homelab/adblock-pd/internal/filtering"
+	"github.com/weby-homelab/adblock-pd/internal/filtering/safesearch"
+	"github.com/weby-homelab/adblock-pd/internal/schedule"
+	"github.com/weby-homelab/adblock-pd/internal/whois"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 )
 
@@ -589,7 +589,7 @@ func (clients *clientsContainer) findRuntime(
 	// runtime client associated with the IP address was stored previously, but
 	// then the server was reloaded.
 	//
-	// See https://github.com/AdguardTeam/ADBlock-PD/issues/2428.
+	// See https://github.com/weby-homelab/adblock-pd/issues/2428.
 	disallowed, rule := clients.clientChecker.IsBlockedClient(ip, string(params.ClientID))
 
 	var disallowedRule *string

@@ -1,6 +1,6 @@
 package querylog
 
-import "github.com/AdguardTeam/ADBlock-PD/internal/whois"
+import "github.com/weby-homelab/adblock-pd/internal/whois"
 
 // Client is the information required by the query log to match against clients
 // during searches.

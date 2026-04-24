@@ -3,7 +3,7 @@ package websvc
 import (
 	"net/http"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghhttp"
+	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
 )
 
 // All Settings Handlers

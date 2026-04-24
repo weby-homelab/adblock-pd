@@ -5,7 +5,7 @@ import (
 	"net/netip"
 	"slices"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/filtering/rulelist"
+	"github.com/weby-homelab/adblock-pd/internal/filtering/rulelist"
 	"github.com/AdguardTeam/urlfilter/rules"
 )
 
@@ -113,7 +113,7 @@ const (
 	// TODO(a.garipov): Remove [Rewritten] and [RewrittenAutoHosts] by merging
 	// their functionality into RewrittenRule.
 	//
-	// See https://github.com/AdguardTeam/ADBlock-PD/issues/2499.
+	// See https://github.com/weby-homelab/adblock-pd/issues/2499.
 	RewrittenRule
 )
 

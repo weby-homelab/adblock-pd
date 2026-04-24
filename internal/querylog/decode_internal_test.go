@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/filtering"
+	"github.com/weby-homelab/adblock-pd/internal/filtering"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/netutil"
 	"github.com/AdguardTeam/golibs/testutil"
@@ -356,7 +356,7 @@ func BenchmarkAnonymizeIP(b *testing.B) {
 	//
 	//	goos: darwin
 	//	goarch: amd64
-	//	pkg: github.com/AdguardTeam/ADBlock-PD/internal/querylog
+	//	pkg: github.com/weby-homelab/adblock-pd/internal/querylog
 	//	cpu: Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz
 	//	BenchmarkAnonymizeIP/v4-12              	426499675	         2.687 ns/op	       0 B/op	       0 allocs/op
 	//	BenchmarkAnonymizeIP/v4_slow-12         	510082938	         2.412 ns/op	       0 B/op	       0 allocs/op

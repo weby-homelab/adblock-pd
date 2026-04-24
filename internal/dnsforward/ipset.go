@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/ipset"
+	"github.com/weby-homelab/adblock-pd/internal/ipset"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/miekg/dns"

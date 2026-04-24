@@ -7,7 +7,7 @@ import (
 	"slices"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghnet"
+	"github.com/weby-homelab/adblock-pd/internal/aghnet"
 	"github.com/AdguardTeam/dnsproxy/proxy"
 	"github.com/AdguardTeam/dnsproxy/upstream"
 	"github.com/AdguardTeam/golibs/netutil"

@@ -15,10 +15,10 @@ import (
 	"slices"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghalg"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghhttp"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghnet"
-	"github.com/AdguardTeam/ADBlock-PD/internal/dhcpsvc"
+	"github.com/weby-homelab/adblock-pd/internal/aghalg"
+	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
+	"github.com/weby-homelab/adblock-pd/internal/aghnet"
+	"github.com/weby-homelab/adblock-pd/internal/dhcpsvc"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
@@ -131,7 +131,7 @@ func leasesToDynamic(leases []*dhcpsvc.Lease) (dynamic []*leaseDynamic) {
 			// The front-end is waiting for RFC 3999 format of the time
 			// value.
 			//
-			// See https://github.com/AdguardTeam/ADBlock-PD/issues/2692.
+			// See https://github.com/weby-homelab/adblock-pd/issues/2692.
 			Expiry: l.Expiry.Format(time.RFC3339),
 		}
 	}
@@ -186,7 +186,7 @@ func (s *server) enableDHCP(ctx context.Context, ifaceName string) (code int, er
 			// machine doesn't have a static IP, so we can assume that it has
 			// and go on.  If the machine doesn't, we'll get an error later.
 			//
-			// See https://github.com/AdguardTeam/ADBlock-PD/issues/2667.
+			// See https://github.com/weby-homelab/adblock-pd/issues/2667.
 			//
 			// TODO(a.garipov): I was thinking about moving this into
 			// IfaceHasStaticIP, but then we wouldn't be able to log it.  Think

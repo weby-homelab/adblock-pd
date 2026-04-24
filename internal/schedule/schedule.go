@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghhttp"
+	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/timeutil"
 	yaml "go.yaml.in/yaml/v4"

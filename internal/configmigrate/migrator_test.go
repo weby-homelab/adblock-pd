@@ -9,7 +9,7 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/configmigrate"
+	"github.com/weby-homelab/adblock-pd/internal/configmigrate"
 	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/stretchr/testify/require"
 	yaml "go.yaml.in/yaml/v4"

@@ -9,7 +9,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/client"
+	"github.com/weby-homelab/adblock-pd/internal/client"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/httphdr"
 	"github.com/AdguardTeam/golibs/log"
@@ -38,7 +38,7 @@ type dnsSettings struct {
 	//
 	// TODO(a.garipov): Allow users to set this.
 	//
-	// See https://github.com/AdguardTeam/ADBlock-PD/issues/3607.
+	// See https://github.com/weby-homelab/adblock-pd/issues/3607.
 	ServerAddresses []net.IP `plist:",omitempty"`
 }
 

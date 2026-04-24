@@ -126,7 +126,7 @@ func appendIPPerInterfaceOptions(orig layers.DHCPOptions) (res layers.DHCPOption
 		// Don't set the Interface MTU because client may choose the value on
 		// their own since it's listed in the [Host Requirements RFC].  It also
 		// seems the values listed there sometimes appear obsolete, see
-		// https://github.com/AdguardTeam/ADBlock-PD/issues/5281.
+		// https://github.com/weby-homelab/adblock-pd/issues/5281.
 		//
 		// [Host Requirements RFC]: https://datatracker.ietf.org/doc/html/rfc1122#section-3.3.3.
 

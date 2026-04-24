@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/next/jsonpatch"
+	"github.com/weby-homelab/adblock-pd/internal/next/jsonpatch"
 	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/stretchr/testify/assert"
 )

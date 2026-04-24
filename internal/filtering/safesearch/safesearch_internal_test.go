@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/filtering"
+	"github.com/weby-homelab/adblock-pd/internal/filtering"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/AdguardTeam/urlfilter/rules"
@@ -106,7 +106,7 @@ func BenchmarkDefault_SearchHost(b *testing.B) {
 	//
 	//	goos: darwin
 	//	goarch: amd64
-	//	pkg: github.com/AdguardTeam/ADBlock-PD/internal/filtering/safesearch
+	//	pkg: github.com/weby-homelab/adblock-pd/internal/filtering/safesearch
 	//	cpu: Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz
 	//	BenchmarkDefault_SearchHost-12    	  751882	      1604 ns/op	     129 B/op	       5 allocs/op
 }

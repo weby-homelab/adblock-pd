@@ -17,23 +17,23 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/agh"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghalg"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghhttp"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghnet"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghos"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghslog"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghtls"
-	"github.com/AdguardTeam/ADBlock-PD/internal/arpdb"
-	"github.com/AdguardTeam/ADBlock-PD/internal/dhcpd"
-	"github.com/AdguardTeam/ADBlock-PD/internal/dnsforward"
-	"github.com/AdguardTeam/ADBlock-PD/internal/filtering"
-	"github.com/AdguardTeam/ADBlock-PD/internal/filtering/hashprefix"
-	"github.com/AdguardTeam/ADBlock-PD/internal/filtering/safesearch"
-	"github.com/AdguardTeam/ADBlock-PD/internal/permcheck"
-	"github.com/AdguardTeam/ADBlock-PD/internal/querylog"
-	"github.com/AdguardTeam/ADBlock-PD/internal/stats"
-	"github.com/AdguardTeam/ADBlock-PD/internal/version"
+	"github.com/weby-homelab/adblock-pd/internal/agh"
+	"github.com/weby-homelab/adblock-pd/internal/aghalg"
+	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
+	"github.com/weby-homelab/adblock-pd/internal/aghnet"
+	"github.com/weby-homelab/adblock-pd/internal/aghos"
+	"github.com/weby-homelab/adblock-pd/internal/aghslog"
+	"github.com/weby-homelab/adblock-pd/internal/aghtls"
+	"github.com/weby-homelab/adblock-pd/internal/arpdb"
+	"github.com/weby-homelab/adblock-pd/internal/dhcpd"
+	"github.com/weby-homelab/adblock-pd/internal/dnsforward"
+	"github.com/weby-homelab/adblock-pd/internal/filtering"
+	"github.com/weby-homelab/adblock-pd/internal/filtering/hashprefix"
+	"github.com/weby-homelab/adblock-pd/internal/filtering/safesearch"
+	"github.com/weby-homelab/adblock-pd/internal/permcheck"
+	"github.com/weby-homelab/adblock-pd/internal/querylog"
+	"github.com/weby-homelab/adblock-pd/internal/stats"
+	"github.com/weby-homelab/adblock-pd/internal/version"
 	"github.com/AdguardTeam/dnsproxy/upstream"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/hostsfile"
@@ -992,7 +992,7 @@ Please note that this is crucial for a server to be able to use privileged ports
 You have two options:
 1. Run ADBlock-Private-DNS with root privileges.
 2. On Linux you can grant the CAP_NET_BIND_SERVICE capability:
-https://github.com/AdguardTeam/ADBlock-PD/wiki/Getting-Started#running-without-superuser`
+https://github.com/weby-homelab/adblock-pd/wiki/Getting-Started#running-without-superuser`
 
 // checkNetworkPermissions checks if the current user permissions are enough to
 // use the required networking functionality.  l must not be nil.

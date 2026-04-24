@@ -14,8 +14,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghhttp"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghuser"
+	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
+	"github.com/weby-homelab/adblock-pd/internal/aghuser"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/httphdr"
 	"github.com/AdguardTeam/golibs/log"
@@ -112,7 +112,7 @@ func (web *webAPI) handleLogin(w http.ResponseWriter, r *http.Request) {
 	// The real IP address of the client [realIP] cannot be used here without
 	// taking trusted proxies into account due to security issues:
 	//
-	// See https://github.com/AdguardTeam/ADBlock-PD/issues/2799.
+	// See https://github.com/weby-homelab/adblock-pd/issues/2799.
 	if remoteIPStr, err = netutil.SplitHost(r.RemoteAddr); err != nil {
 		writeErrorWithIP(
 			r,
@@ -561,7 +561,7 @@ func (mw *authMiddlewareDefault) userFromRequestBasicAuth(
 	// The real IP address of the client [realIP] cannot be used here without
 	// taking trusted proxies into account due to security issues:
 	//
-	// See https://github.com/AdguardTeam/ADBlock-PD/issues/2799.
+	// See https://github.com/weby-homelab/adblock-pd/issues/2799.
 	if remoteIP, err = netutil.SplitHost(r.RemoteAddr); err != nil {
 		return nil, fmt.Errorf("getting remote address: %w", err)
 	}

@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghrenameio"
+	"github.com/weby-homelab/adblock-pd/internal/aghrenameio"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/stretchr/testify/assert"

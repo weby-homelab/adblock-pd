@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghos"
+	"github.com/weby-homelab/adblock-pd/internal/aghos"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	yaml "go.yaml.in/yaml/v4"

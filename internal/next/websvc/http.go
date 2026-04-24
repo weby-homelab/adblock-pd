@@ -8,9 +8,9 @@ import (
 	"net/netip"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghhttp"
-	"github.com/AdguardTeam/ADBlock-PD/internal/next/agh"
-	"github.com/AdguardTeam/ADBlock-PD/internal/next/jsonpatch"
+	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
+	"github.com/weby-homelab/adblock-pd/internal/next/agh"
+	"github.com/weby-homelab/adblock-pd/internal/next/jsonpatch"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 )
 

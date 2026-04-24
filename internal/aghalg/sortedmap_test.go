@@ -3,7 +3,7 @@ package aghalg_test
 import (
 	"testing"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghalg"
+	"github.com/weby-homelab/adblock-pd/internal/aghalg"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -4,7 +4,7 @@ import (
 	"net"
 	"testing"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghnet"
+	"github.com/weby-homelab/adblock-pd/internal/aghnet"
 	"github.com/AdguardTeam/golibs/netutil"
 	"github.com/stretchr/testify/assert"
 )

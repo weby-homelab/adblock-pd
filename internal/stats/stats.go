@@ -13,10 +13,10 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/agh"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghhttp"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghnet"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghos"
+	"github.com/weby-homelab/adblock-pd/internal/agh"
+	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
+	"github.com/weby-homelab/adblock-pd/internal/aghnet"
+	"github.com/weby-homelab/adblock-pd/internal/aghos"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/timeutil"
@@ -393,7 +393,7 @@ func (s *StatsCtx) openDB() (err error) {
 	if err != nil {
 		if err.Error() == "invalid argument" {
 			const lines = `ADBlock-Private-DNS cannot be initialized due to an incompatible file system.
-Please read the explanation here: https://github.com/AdguardTeam/ADBlock-PD/wiki/Getting-Started#limitations`
+Please read the explanation here: https://github.com/weby-homelab/adblock-pd/wiki/Getting-Started#limitations`
 
 			// TODO(s.chzhen):  Use passed context.
 			slogutil.PrintLines(

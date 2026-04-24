@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghos"
+	"github.com/weby-homelab/adblock-pd/internal/aghos"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/c2h5oh/datasize"
@@ -156,7 +156,7 @@ func (l *queryLog) periodicRotate(ctx context.Context) {
 	// rotating log files.  It's smaller of any available rotation interval to
 	// increase time accuracy.
 	//
-	// See https://github.com/AdguardTeam/ADBlock-PD/issues/3823.
+	// See https://github.com/weby-homelab/adblock-pd/issues/3823.
 	const rotationCheckIvl = 1 * time.Hour
 
 	rotations := time.NewTicker(rotationCheckIvl)

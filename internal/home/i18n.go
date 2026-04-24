@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghhttp"
+	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
 	"github.com/AdguardTeam/golibs/container"
 )
 

@@ -130,7 +130,7 @@ const Examples = (props: ExamplesProps) => (
                 <Trans
                     components={[
                         <a
-                            href="https://github.com/AdguardTeam/ADBlock-PD/wiki/Configuration#upstreams-for-domains"
+                            href="https://github.com/weby-homelab/adblock-pd/wiki/Configuration#upstreams-for-domains"
                             target="_blank"
                             rel="noopener noreferrer"
                             key="0">
@@ -146,7 +146,7 @@ const Examples = (props: ExamplesProps) => (
                 <Trans
                     components={[
                         <a
-                            href="https://github.com/AdguardTeam/ADBlock-PD/wiki/Configuration#upstreams-for-domains"
+                            href="https://github.com/weby-homelab/adblock-pd/wiki/Configuration#upstreams-for-domains"
                             target="_blank"
                             rel="noopener noreferrer"
                             key="0">

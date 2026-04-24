@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/next/configmgr"
+	"github.com/weby-homelab/adblock-pd/internal/next/configmgr"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/service"

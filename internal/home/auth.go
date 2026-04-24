@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghuser"
+	"github.com/weby-homelab/adblock-pd/internal/aghuser"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/netutil"

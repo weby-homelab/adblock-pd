@@ -7,7 +7,7 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/dhcpsvc"
+	"github.com/weby-homelab/adblock-pd/internal/dhcpsvc"
 	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"

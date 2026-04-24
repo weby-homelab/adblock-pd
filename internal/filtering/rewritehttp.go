@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghalg"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghhttp"
+	"github.com/weby-homelab/adblock-pd/internal/aghalg"
+	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
 )
 
 // rewriteEntryJSON is a single entry of the DNS rewrite.

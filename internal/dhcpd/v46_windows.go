@@ -9,7 +9,7 @@ import (
 	"net"
 	"net/netip"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/dhcpsvc"
+	"github.com/weby-homelab/adblock-pd/internal/dhcpsvc"
 )
 
 type winServer struct{}

@@ -77,7 +77,7 @@ func ipFromAddr(addr net.Addr, ipv IPVersion) (ip net.IP) {
 // each time using the provided backoff.  Sometimes an interface needs a few
 // seconds to really initialize.
 //
-// See https://github.com/AdguardTeam/ADBlock-PD/issues/2304.
+// See https://github.com/weby-homelab/adblock-pd/issues/2304.
 func IfaceDNSIPAddrs(
 	ctx context.Context,
 	l *slog.Logger,
@@ -117,7 +117,7 @@ func IfaceDNSIPAddrs(
 		// server.  Fix that by setting the secondary DNS address to the same
 		// address.
 		//
-		// See https://github.com/AdguardTeam/ADBlock-PD/issues/1708.
+		// See https://github.com/weby-homelab/adblock-pd/issues/1708.
 		l.DebugContext(ctx, "setting secondary dns ip to itself", "ipv", ipv)
 		addrs = append(addrs, addrs[0])
 	default:

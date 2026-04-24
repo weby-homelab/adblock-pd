@@ -19,10 +19,10 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/agh"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghhttp"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghos"
-	"github.com/AdguardTeam/ADBlock-PD/internal/filtering/rulelist"
+	"github.com/weby-homelab/adblock-pd/internal/agh"
+	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
+	"github.com/weby-homelab/adblock-pd/internal/aghos"
+	"github.com/weby-homelab/adblock-pd/internal/filtering/rulelist"
 	"github.com/AdguardTeam/golibs/container"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/hostsfile"
@@ -588,7 +588,7 @@ func (d *DNSFilter) handleRewriteLoop(
 		} else if host == rwAns && isWildcard(rwPat) {
 			// An "*.example.com → sub.example.com" rewrite matching in a loop.
 			//
-			// See https://github.com/AdguardTeam/ADBlock-PD/issues/4016.
+			// See https://github.com/weby-homelab/adblock-pd/issues/4016.
 
 			res.CanonName = host
 

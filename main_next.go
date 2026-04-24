@@ -5,7 +5,7 @@ package main
 import (
 	"embed"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/next/cmd"
+	"github.com/weby-homelab/adblock-pd/internal/next/cmd"
 )
 
 // Embed the prebuilt client here since we strive to keep .go files inside the

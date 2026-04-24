@@ -19,8 +19,8 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/next/agh"
-	"github.com/AdguardTeam/ADBlock-PD/internal/next/dnssvc"
+	"github.com/weby-homelab/adblock-pd/internal/next/agh"
+	"github.com/weby-homelab/adblock-pd/internal/next/dnssvc"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/netutil"
 	"github.com/AdguardTeam/golibs/netutil/httputil"

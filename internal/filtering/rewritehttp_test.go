@@ -10,9 +10,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghalg"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghtest"
-	"github.com/AdguardTeam/ADBlock-PD/internal/filtering"
+	"github.com/weby-homelab/adblock-pd/internal/aghalg"
+	"github.com/weby-homelab/adblock-pd/internal/aghtest"
+	"github.com/weby-homelab/adblock-pd/internal/filtering"
 	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

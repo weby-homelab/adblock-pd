@@ -36,7 +36,7 @@ func Unsupported(op string) (err error) {
 
 // SetRlimit sets user-specified limit of how many fd's we can use.
 //
-// See https://github.com/AdguardTeam/ADBlock-PD/internal/issues/659.
+// See https://github.com/weby-homelab/adblock-pd/internal/issues/659.
 func SetRlimit(val uint64) (err error) {
 	return setRlimit(val)
 }
@@ -55,7 +55,7 @@ const MaxCmdOutputSize = 64 * 1024
 // Don't use -C flag here since it's a feature of linux's ps
 // implementation.  Use POSIX-compatible flags instead.
 //
-// See https://github.com/AdguardTeam/ADBlock-PD/issues/3457.
+// See https://github.com/weby-homelab/adblock-pd/issues/3457.
 var psArgs = []string{"-A", "-o", "pid=", "-o", "comm="}
 
 // PIDByCommand searches for process named command and returns its PID ignoring

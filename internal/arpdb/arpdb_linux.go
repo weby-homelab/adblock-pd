@@ -13,7 +13,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghos"
+	"github.com/weby-homelab/adblock-pd/internal/aghos"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/osutil/executil"
 	"github.com/AdguardTeam/golibs/stringutil"
@@ -51,7 +51,7 @@ func newARPDB(logger *slog.Logger, cmdCons executil.CommandConstructor) (arp *ar
 			// By default ARP attempts to resolve the hostnames via DNS.  See
 			// man 8 arp.
 			//
-			// See also https://github.com/AdguardTeam/ADBlock-PD/issues/3157.
+			// See also https://github.com/weby-homelab/adblock-pd/issues/3157.
 			args: []string{"-a", "-n"},
 		},
 		// Finally, try "ip neigh".

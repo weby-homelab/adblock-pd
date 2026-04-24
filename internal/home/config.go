@@ -12,17 +12,17 @@ import (
 	"sync"
 	"time"
 
-	"github.com/AdguardTeam/ADBlock-PD/internal/agh"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghalg"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghos"
-	"github.com/AdguardTeam/ADBlock-PD/internal/aghtls"
-	"github.com/AdguardTeam/ADBlock-PD/internal/configmigrate"
-	"github.com/AdguardTeam/ADBlock-PD/internal/dhcpd"
-	"github.com/AdguardTeam/ADBlock-PD/internal/dnsforward"
-	"github.com/AdguardTeam/ADBlock-PD/internal/filtering"
-	"github.com/AdguardTeam/ADBlock-PD/internal/querylog"
-	"github.com/AdguardTeam/ADBlock-PD/internal/schedule"
-	"github.com/AdguardTeam/ADBlock-PD/internal/stats"
+	"github.com/weby-homelab/adblock-pd/internal/agh"
+	"github.com/weby-homelab/adblock-pd/internal/aghalg"
+	"github.com/weby-homelab/adblock-pd/internal/aghos"
+	"github.com/weby-homelab/adblock-pd/internal/aghtls"
+	"github.com/weby-homelab/adblock-pd/internal/configmigrate"
+	"github.com/weby-homelab/adblock-pd/internal/dhcpd"
+	"github.com/weby-homelab/adblock-pd/internal/dnsforward"
+	"github.com/weby-homelab/adblock-pd/internal/filtering"
+	"github.com/weby-homelab/adblock-pd/internal/querylog"
+	"github.com/weby-homelab/adblock-pd/internal/schedule"
+	"github.com/weby-homelab/adblock-pd/internal/stats"
 	"github.com/AdguardTeam/dnsproxy/fastip"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
@@ -503,8 +503,8 @@ var config = &configuration{
 
 			// set default maximum concurrent queries to 300
 			// we introduced a default limit due to this:
-			// https://github.com/AdguardTeam/ADBlock-PD/issues/2015#issuecomment-674041912
-			// was later increased to 300 due to https://github.com/AdguardTeam/ADBlock-PD/issues/2257
+			// https://github.com/weby-homelab/adblock-pd/issues/2015#issuecomment-674041912
+			// was later increased to 300 due to https://github.com/weby-homelab/adblock-pd/issues/2257
 			MaxGoroutines: 300,
 		},
 		UpstreamTimeout:  timeutil.Duration(dnsforward.DefaultTimeout),
