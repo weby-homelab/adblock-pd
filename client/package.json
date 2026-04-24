@@ -53,6 +53,7 @@
     "redux-actions": "^2.6.5",
     "redux-thunk": "^2.3.0",
     "url-polyfill": "^1.1.12",
+    "uuid": "^14.0.0",
     "yaml": "2.8.3"
   },
   "devDependencies": {
@@ -124,6 +125,7 @@
   "overrides": {
     "d3-color": "^3.1.0",
     "node-fetch": "^2.6.7",
-    "serialize-javascript": "^7.0.5"
+    "serialize-javascript": "^7.0.5",
+    "uuid": "14.0.0"
   }
 }
