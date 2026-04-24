@@ -34,7 +34,7 @@ jobs:
       if: matrix.language == 'javascript-typescript'
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: '24'
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
@@ -45,7 +45,7 @@ jobs:
       if: matrix.language == 'go' || matrix.language == 'javascript-typescript'
       run: |
         cd client
-        npm ci --ignore-scripts
+        npm install
         npm run build-prod
 
     - name: Build Backend (Go)

@@ -1,5 +1,5 @@
 # Stage 1: Build the frontend
-FROM node:20-bullseye AS frontend-builder
+FROM node:24-bullseye AS frontend-builder
 WORKDIR /app/client
 COPY client/package*.json ./
 COPY client/.twosky.json ./
