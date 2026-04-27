@@ -271,7 +271,7 @@ const getTabs = ({ tlsAddress, httpsAddress, showDnsPrivacyNotice, serverName, p
                                 <Trans
                                     components={[
                                         <a
-                                            href="https://github.com/AdguardTeam/AdguardHome/wiki/Encryption"
+                                            href="https://github.com/weby-homelab/adblock-pd/wiki/Encryption"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             key="0">
