@@ -31,7 +31,7 @@ var (
 	channel    string = ChannelRelease
 	goarm      string
 	gomips     string
-	version    string = "v0.9.5"
+	version    string = "v0.9.6"
 	committime string
 )
 
