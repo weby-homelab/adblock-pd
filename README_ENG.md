@@ -31,6 +31,19 @@
 
 ---
 
+## 📸 Interface (Bento UI / Glassmorphism)
+
+<p align="center">
+  <img src="ADBlock-PD-Light.png" width="32%" alt="Light Theme 1" />
+  <img src="ADBlock-PD-Light-1.png" width="32%" alt="Light Theme 2" />
+  <img src="ADBlock-PD-Light-2.png" width="32%" alt="Light Theme 3" />
+</p>
+<p align="center">
+  <img src="ADBlock-PD-Dark.png" width="32%" alt="Dark Theme 1" />
+  <img src="ADBlock-PD-Dark-1.png" width="32%" alt="Dark Theme 2" />
+  <img src="ADBlock-PD-Dark-2.png" width="32%" alt="Dark Theme 3" />
+</p>
+
 ## 🎯 What is this?
 **ADBlock-Private-DNS (ADBlock-PD)** is a fork of the popular AdGuard Home DNS server (based on v0.107.74). Created by **Weby Homelab**, the sole purpose of this project is to **completely sever all ties with AdGuard's infrastructure (and any other external entity)**. We took a powerful filtering engine and fully "sanitized" it.
 
