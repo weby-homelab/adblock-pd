@@ -1,26 +1,26 @@
 :root {
     --black: #131313;
-    --bgcolor: #f5f7fb;
+    --bgcolor: #e8eaf6;
     --mcolor: #495057;
     --scolor: rgba(74, 74, 74, 0.7);
-    --border-color: rgba(0, 40, 100, 0.12);
-    --header-bgcolor: #fff;
-    --card-bgcolor: #fff;
-    --card-border-color: rgba(0, 40, 100, 0.12);
-    --ctrl-bgcolor: #fff;
-    --ctrl-select-bgcolor: rgba(69, 79, 94, 0.12);
+    --border-color: rgba(255, 255, 255, 0.4);
+    --header-bgcolor: rgba(255, 255, 255, 0.65);
+    --card-bgcolor: rgba(255, 255, 255, 0.65);
+    --card-border-color: rgba(255, 255, 255, 0.5);
+    --ctrl-bgcolor: rgba(255, 255, 255, 0.6);
+    --ctrl-select-bgcolor: rgba(255, 255, 255, 0.5);
     --ctrl-dropdown-color: #212529;
-    --ctrl-dropdown-bgcolor-focus: #f8f9fa;
+    --ctrl-dropdown-bgcolor-focus: rgba(255, 255, 255, 0.8);
     --ctrl-dropdown-color-focus: #16181b;
     --btn-success-bgcolor: #5eba00;
-    --form-disabled-bgcolor: #f8f9fa;
+    --form-disabled-bgcolor: rgba(255, 255, 255, 0.4);
     --form-disabled-color: #495057;
     --rt-nodata-bgcolor: rgba(255, 255, 255, 0.8);
     --rt-nodata-color: rgba(0, 0, 0, 0.5);
-    --modal-overlay-bgcolor: rgba(255, 255, 255, 0.75);
-    --logs__table-bgcolor: #fff;
-    --logs__row--blue-bgcolor: #e5effd;
-    --logs__row--white-bgcolor: #fff;
+    --modal-overlay-bgcolor: rgba(255, 255, 255, 0.4);
+    --logs__table-bgcolor: transparent;
+    --logs__row--blue-bgcolor: rgba(229, 239, 253, 0.6);
+    --logs__row--white-bgcolor: transparent;
     --detailed-info-color: #888888;
     --yellow-pale: rgba(247, 181, 0, 0.1);
     --green79: #67b279;
@@ -31,50 +31,90 @@
     --font-family-monospace: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
     --font-size-disable-autozoom: 1rem;
     --alert-message-color: #24426c;
-    --alert-message-border: #cbdbf2;
-    --alert-message-bg: #dae5f5;
-    --checkbox-bg: #e2e2e2;
-    --radio-bg: #ffffff;
+    --alert-message-border: rgba(255, 255, 255, 0.6);
+    --alert-message-bg: rgba(218, 229, 245, 0.65);
+    --checkbox-bg: rgba(255, 255, 255, 0.5);
+    --radio-bg: rgba(255, 255, 255, 0.5);
 }
 
 [data-theme='dark'] {
     --black: #ffffff;
-    --bgcolor: #131313;
+    --bgcolor: #0f111a;
     --mcolor: #e6e6e6;
     --scolor: #a5a5a5;
-    --header-bgcolor: #131313;
-    --border-color: #222;
-    --card-bgcolor: #1c1c1c;
-    --card-border-color: #3d3d3d;
-    --ctrl-bgcolor: #1c1c1c;
-    --ctrl-select-bgcolor: #3d3d3d;
+    --header-bgcolor: rgba(20, 22, 30, 0.65);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --card-bgcolor: rgba(25, 28, 38, 0.65);
+    --card-border-color: rgba(255, 255, 255, 0.08);
+    --ctrl-bgcolor: rgba(20, 22, 30, 0.6);
+    --ctrl-select-bgcolor: rgba(255, 255, 255, 0.05);
     --ctrl-dropdown-color: #fff;
-    --ctrl-dropdown-bgcolor-focus: #000;
+    --ctrl-dropdown-bgcolor-focus: rgba(0, 0, 0, 0.8);
     --ctrl-dropdown-color-focus: #fff;
     --btn-success-bgcolor: #67b279;
-    --form-disabled-bgcolor: #2d2d2d;
+    --form-disabled-bgcolor: rgba(255, 255, 255, 0.05);
     --form-disabled-color: #a5a5a5;
     --logs__text-color: #f3f3f3;
-    --rt-nodata-bgcolor: #1c1c1c;
+    --rt-nodata-bgcolor: rgba(20, 22, 30, 0.6);
     --rt-nodata-color: #fff;
-    --modal-overlay-bgcolor: rgba(19, 19, 19, 0.75);
-    --logs__table-bgcolor: #3d3d3d;
-    --logs__row--blue-bgcolor: #467fcf;
-    --logs__row--white-bgcolor: #1c1c1c;
+    --modal-overlay-bgcolor: rgba(10, 12, 18, 0.6);
+    --logs__table-bgcolor: transparent;
+    --logs__row--blue-bgcolor: rgba(70, 127, 207, 0.3);
+    --logs__row--white-bgcolor: transparent;
     --detailed-info-color: #fff;
     --gray300: #f3f3f3;
-    --loading-bg: #131313;
+    --loading-bg: rgba(20, 22, 30, 0.6);
     --alert-message-color: #e6e6e6;
-    --alert-message-border: #363648;
-    --alert-message-bg: #363648;
-    --checkbox-bg: #a4a4a4;
-    --radio-bg: #a4a4a4;
+    --alert-message-border: rgba(255, 255, 255, 0.1);
+    --alert-message-bg: rgba(54, 54, 72, 0.65);
+    --checkbox-bg: rgba(255, 255, 255, 0.1);
+    --radio-bg: rgba(255, 255, 255, 0.1);
 }
 
 body {
     margin: 0;
     padding: 0;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    background-image: radial-gradient(circle at top left, var(--bgcolor) 0%, rgba(0, 0, 0, 0.05) 100%);
+    background-attachment: fixed;
+}
+
+/* Glassmorphism Bento overrides */
+.card {
+    background: var(--card-bgcolor) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--card-border-color) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05) !important;
+    overflow: hidden;
+}
+
+.header {
+    background: var(--header-bgcolor) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.modal-content {
+    background: var(--card-bgcolor) !important;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--card-border-color) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.1) !important;
+}
+
+.form-control, .select {
+    background: var(--ctrl-bgcolor) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    backdrop-filter: blur(8px);
+}
+
+.btn {
+    border-radius: 12px !important;
 }
 
 /* Disable Auto Zoom in Input - Safari on iPhone https://stackoverflow.com/a/6394497 */
