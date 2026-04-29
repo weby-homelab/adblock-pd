@@ -169,7 +169,9 @@ This project is distributed under the **GNU General Public License v3.0 (GPL-3.0
 It is provided "AS IS". The Weby Homelab team assumes no liability for any network disruptions, data loss, or other consequences resulting from the use of this software.
 
 ---
+
+<br>
 <p align="center">
-  <b>Made with ❤️ in Kyiv under air raid sirens and blackouts.</b><br>
-  Weby Homelab - Security First. Your Privacy, Your Rules.
+  Built in Ukraine under air raid sirens &amp; blackouts ⚡<br>
+  &copy; 2026 Weby Homelab
 </p>

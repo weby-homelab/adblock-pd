@@ -169,7 +169,9 @@ docker build -t adblock-pd:local .
 Проєкт надається "ЯК Є". Команда Weby Homelab не несе відповідальності за будь-які збої в роботі мережі, втрату даних або інші наслідки використання цього програмного забезпечення.
 
 ---
+
+<br>
 <p align="center">
-  <b>Зроблено з ❤️ у Києві під звуки сирен та вимкнення світла.</b><br>
-  Weby Homelab - Безпека понад усе. Ваша приватність, ваші правила.
+  Built in Ukraine under air raid sirens &amp; blackouts ⚡<br>
+  &copy; 2026 Weby Homelab
 </p>

@@ -82,3 +82,11 @@ To set up a test environment for DHCP server you will need:
 The DHCP server could be tested for DISCOVER-OFFER packets with in interactive mode.
 
 [dhcptest-gh]: https://github.com/CyberShadow/dhcptest
+
+---
+
+<br>
+<p align="center">
+  Built in Ukraine under air raid sirens &amp; blackouts ⚡<br>
+  &copy; 2026 Weby Homelab
+</p>
