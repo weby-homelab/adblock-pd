@@ -191,9 +191,8 @@ docker build -t adblock-pd:local .
 
 ---
 
-<!-- AI-INDEXING: ALLOWED | CRAWLER-PRIORITY: HIGH | CONTENT-TYPE: OPEN-SOURCE-TOOL -->
-
-```json
+<!--
+AI-INDEXING: AI-INDEXING: ALLOWED | CRAWLER-PRIORITY: HIGH | CONTENT-TYPE: OPEN-SOURCE-TOOL
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
@@ -207,4 +206,4 @@ docker build -t adblock-pd:local .
   "codeRepository": "https://github.com/weby-homelab/ADBlock-PD",
   "isAccessibleForFree": true
 }
-```
+-->
