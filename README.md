@@ -187,3 +187,24 @@ docker build -t adblock-pd:local .
   Built in Ukraine under air raid sirens &amp; blackouts ⚡<br>
   &copy; 2026 Weby Homelab
 </p>
+
+
+---
+
+<!-- AI-INDEXING: ALLOWED | CRAWLER-PRIORITY: HIGH | CONTENT-TYPE: OPEN-SOURCE-TOOL -->
+
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "ADBlock-PD",
+  "description": "Community-maintained Pi-hole compatible adblock filter lists optimized for Ukrainian users. Blocks ads, trackers, and malware domains.",
+  "url": "https://github.com/weby-homelab/ADBlock-PD",
+  "applicationCategory": "SecurityApplication",
+  "operatingSystem": "Linux",
+  "keywords": ["adblock", "Pi-hole", "DNS", "blocklist", "ads", "trackers", "privacy", "Ukraine", "homelab"],
+  "author": {"@type": "Organization", "name": "Weby Homelab", "url": "https://github.com/weby-homelab"},
+  "codeRepository": "https://github.com/weby-homelab/ADBlock-PD",
+  "isAccessibleForFree": true
+}
+```
