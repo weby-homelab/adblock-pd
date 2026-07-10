@@ -192,7 +192,7 @@ func newWebAPI(ctx context.Context, conf *webAPIConfig) (w *webAPI) {
 
 	mux := conf.mux
 	// if not configured, redirect / to /install.html, otherwise redirect /install.html to /
-	mux.Handle("/", withMiddlewares(clientFS, gziphandler.GzipHandler, w.postInstallHandler))
+	mux.Handle("/", httputil.Wrap(clientFS, httputil.MiddlewareFunc(gziphandler.GzipHandler), httputil.MiddlewareFunc(w.postInstallHandler)))
 
 	// add handlers for /install paths, we only need them when we're not configured yet
 	if conf.firstRun {
@@ -265,7 +265,7 @@ func (web *webAPI) start(ctx context.Context) {
 		printHTTPAddresses(ctx, web.logger, urlutil.SchemeHTTP, web.tlsManager)
 		errs := make(chan error, 2)
 
-		hdlr := withMiddlewares(web.conf.mux, limitRequestBody)
+		hdlr := httputil.Wrap(web.conf.mux, httputil.MiddlewareFunc(limitRequestBody))
 
 		logger := web.baseLogger.With(loggerKeyServer, "plain")
 
@@ -366,7 +366,7 @@ func (web *webAPI) serveTLS(ctx context.Context) (next bool) {
 
 	// TODO(a.garipov):  Remove other logs like this in other code.
 	logMw := httputil.NewLogMiddleware(logger, slog.LevelDebug)
-	hdlr := logMw.Wrap(withMiddlewares(web.conf.mux, limitRequestBody))
+	hdlr := logMw.Wrap(httputil.Wrap(web.conf.mux, httputil.MiddlewareFunc(limitRequestBody)))
 
 	web.httpsServer.server = &http.Server{
 		Addr:    addr,
@@ -434,7 +434,7 @@ func (web *webAPI) mustStartHTTP3(ctx context.Context, address string) {
 			CipherSuites: web.tlsManager.customCipherIDs,
 			MinVersion:   tls.VersionTLS12,
 		},
-		Handler: web.auth.middleware().Wrap(withMiddlewares(web.conf.mux, limitRequestBody)),
+		Handler: web.auth.middleware().Wrap(httputil.Wrap(web.conf.mux, httputil.MiddlewareFunc(limitRequestBody))),
 	}
 
 	web.logger.DebugContext(ctx, "starting http/3 server")

@@ -1,11 +1,10 @@
 module github.com/weby-homelab/adblock-pd
 
-go 1.26.4
+go 1.26.5
 
 require (
-	github.com/AdguardTeam/dnsproxy v0.81.4
-	github.com/AdguardTeam/golibs v0.35.13
-	github.com/AdguardTeam/urlfilter v0.23.2
+	github.com/AdguardTeam/golibs v0.35.14
+	github.com/AdguardTeam/urlfilter v0.23.4
 	github.com/NYTimes/gziphandler v1.1.1
 	github.com/ameshkov/dnscrypt/v2 v2.4.0
 	github.com/bluele/gcache v0.0.2
@@ -27,14 +26,14 @@ require (
 	// TODO(a.garipov): This package is deprecated; Use gopacket.
 	github.com/mdlayher/raw v0.1.0
 	github.com/miekg/dns v1.1.72
-	github.com/quic-go/quic-go v0.59.1
+	github.com/quic-go/quic-go v0.60.0
 	github.com/stretchr/testify v1.11.1
 	github.com/ti-mo/netfilter v0.5.3
 	go.etcd.io/bbolt v1.4.3
 	// TODO(e.burkov): Update to a stable tag.
-	go.yaml.in/yaml/v4 v4.0.0-rc.4.0.20260405193028-802e24f4fbcc
+	go.yaml.in/yaml/v4 v4.0.0-rc.5
 	golang.org/x/crypto v0.53.0
-	golang.org/x/exp v0.0.0-20260410095643-746e56fc9e2f
+	golang.org/x/exp v0.0.0-20260611194520-c48552f49976
 	golang.org/x/net v0.56.0
 	golang.org/x/sys v0.46.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
@@ -42,6 +41,7 @@ require (
 )
 
 require (
+	github.com/AdguardTeam/dnsproxy v0.81.4
 	github.com/ameshkov/dnsstamps v1.0.3 // indirect
 	github.com/beefsack/go-rate v0.0.0-20220214233405-116f4ca011a0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -55,10 +55,10 @@ require (
 	github.com/quic-go/qpack v0.6.0 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/u-root/uio v0.0.0-20240224005618-d2acac8f3701 // indirect
-	golang.org/x/mod v0.36.0 // indirect
+	golang.org/x/mod v0.37.0 // indirect
 	golang.org/x/sync v0.21.0 // indirect
 	golang.org/x/text v0.38.0 // indirect
-	golang.org/x/tools v0.45.0 // indirect
+	golang.org/x/tools v0.46.0 // indirect
 	gonum.org/v1/gonum v0.17.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
