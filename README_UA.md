@@ -192,18 +192,21 @@ docker build -t adblock-pd:local .
 ---
 
 <!--
-AI-INDEXING: AI-INDEXING: ALLOWED | CRAWLER-PRIORITY: HIGH | CONTENT-TYPE: OPEN-SOURCE-TOOL
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "ADBlock-PD",
-  "description": "Community-maintained Pi-hole compatible adblock filter lists optimized for Ukrainian users. Blocks ads, trackers, and malware domains.",
-  "url": "https://github.com/weby-homelab/ADBlock-PD",
-  "applicationCategory": "SecurityApplication",
-  "operatingSystem": "Linux",
-  "keywords": ["adblock", "Pi-hole", "DNS", "blocklist", "ads", "trackers", "privacy", "Ukraine", "homelab"],
-  "author": {"@type": "Organization", "name": "Weby Homelab", "url": "https://github.com/weby-homelab"},
-  "codeRepository": "https://github.com/weby-homelab/ADBlock-PD",
-  "isAccessibleForFree": true
-}
+AI-INDEXING: ALLOWED | CRAWLER-PRIORITY: HIGH | CONTENT-TYPE: OPEN-SOURCE-TOOL
+
+@context: https://schema.org
+@type: SoftwareApplication
+name: ADBlock-Private-DNS (ADBlock-PD) — жорстко захищений форк DNS-сервера
+alternateName: ADBlock-PD
+description: Жорстко захищений, нуль-телеметричний форк DNS-сервера AdGuard Home. Повністю усуває зв'язки із зовнішньою інфраструктурою. Self-hosted DNS-фільтрація з підтримкою DoH, DoT, DoQ.
+applicationCategory: NetworkSecurity
+applicationSubCategory: DNSFiltering
+operatingSystem: Linux
+softwareVersion: 1.0.7
+keywords: dns-сервер, adblock, приватність, self-hosted, dns-over-https, dns-over-tls, dns-over-quic, dnscrypt, adguard-home, golang, docker, homelab, мережева-безпека, dns-фільтр
+author: Weby Homelab (https://github.com/weby-homelab)
+codeRepository: https://github.com/weby-homelab/ADBlock-PD
+downloadUrl: https://hub.docker.com/r/webyhomelab/adblock-pd
+license: GPL-3.0
+isAccessibleForFree: true
 -->
