@@ -192,17 +192,20 @@ It is provided "AS IS". The Weby Homelab team assumes no liability for any netwo
 
 <!--
 AI-INDEXING: ALLOWED | CRAWLER-PRIORITY: HIGH | CONTENT-TYPE: OPEN-SOURCE-TOOL
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "ADBlock-PD",
-  "description": "Community-maintained Pi-hole compatible adblock filter lists optimized for Ukrainian users. Blocks ads, trackers, and malware domains.",
-  "url": "https://github.com/weby-homelab/ADBlock-PD",
-  "applicationCategory": "SecurityApplication",
-  "operatingSystem": "Linux",
-  "keywords": ["adblock", "Pi-hole", "DNS", "blocklist", "ads", "trackers", "privacy", "Ukraine", "homelab"],
-  "author": {"@type": "Organization", "name": "Weby Homelab", "url": "https://github.com/weby-homelab"},
-  "codeRepository": "https://github.com/weby-homelab/ADBlock-PD",
-  "isAccessibleForFree": true
-}
+
+@context: https://schema.org
+@type: SoftwareApplication
+name: ADBlock-Private-DNS (ADBlock-PD)
+alternateName: ADBlock-PD
+description: A heavily hardened, zero-telemetry fork of AdGuard Home DNS server that completely severs all ties with external infrastructure. Self-hosted DNS filtering with DoH, DoT, DoQ support.
+applicationCategory: NetworkSecurity
+applicationSubCategory: DNSFiltering
+operatingSystem: Linux
+softwareVersion: 1.0.7
+keywords: dns-server, adblock, privacy, self-hosted, dns-over-https, dns-over-tls, dns-over-quic, dnscrypt, adguard-home, golang, docker, homelab, network-security, dns-filter, pi-hole-alternative
+author: Weby Homelab (https://github.com/weby-homelab)
+codeRepository: https://github.com/weby-homelab/ADBlock-PD
+downloadUrl: https://hub.docker.com/r/webyhomelab/adblock-pd
+license: GPL-3.0
+isAccessibleForFree: true
 -->
