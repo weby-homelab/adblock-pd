@@ -1,4 +1,6 @@
 import path from 'path';
+import fs from 'fs';
+import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
@@ -9,6 +11,7 @@ import { BUILD_ENVS } from './constants.js';
 // eslint-disable-next-line no-underscore-dangle
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
+const pkgJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'package.json'), 'utf-8'));
 const RESOURCES_PATH = path.resolve(__dirname);
 const ENTRY_REACT = path.resolve(RESOURCES_PATH, 'src/index.tsx');
 const ENTRY_INSTALL = path.resolve(RESOURCES_PATH, 'src/install/index.tsx');
@@ -112,6 +115,9 @@ const config = {
                     to: PUBLIC_ASSETS_PATH,
                 },
             ],
+        }),
+        new webpack.DefinePlugin({
+            'process.env.APP_VERSION': JSON.stringify(pkgJson.version),
         }),
     ],
 };
