@@ -45,7 +45,7 @@
 </p>
 
 ## 🎯 Що це таке?
-**ADBlock-Private-DNS (ADBlock-PD)** — це власна розробка на базі відомого DNS-сервера AdGuard Home (версії 0.107.77). Проєкт створений командою **Weby Homelab** з єдиною метою: **повністю усунути будь-які зв'язки з інфраструктурою початкових розробників та будь-якою іншою зовнішньою мережею**. Ми взяли потужний рушій фільтрації та провели його повну "стерилізацію". 
+**ADBlock-Private-DNS (ADBlock-PD)** — це власна розробка на базі відомого DNS-сервера AdGuard Home (версії 0.107.78). Проєкт створений командою **Weby Homelab** з єдиною метою: **повністю усунути будь-які зв'язки з інфраструктурою початкових розробників та будь-якою іншою зовнішньою мережею**. Ми взяли потужний рушій фільтрації та провели його повну "стерилізацію". 
 
 Ваш DNS-сервер повинен належати лише вам. Ніякого збору даних, жодних прихованих запитів, жодного завантаження стороннього коду без вашого відома.
 
@@ -70,7 +70,7 @@ flowchart TD
         C3("📺 Smart TV / IoT"):::client
     end
 
-    subgraph Docker ["🐳 Docker Середовище (debian:bullseye-slim)"]
+    subgraph Docker ["🐳 Docker Середовище (debian:bookworm-slim)"]
         direction TB
         
         subgraph ADBlock_PD ["🛡️ Ядро ADBlock-Private-DNS"]
@@ -139,7 +139,7 @@ flowchart TD
 Контейнер оснащено вбудованою перевіркою стану (`HEALTHCHECK`) на базі утиліти `host`. Система кожні 30 секунд перевіряє життєздатність DNS-служби (`127.0.0.1:53`). Якщо служба "зависає", Docker автоматично її перезапускає, гарантуючи стабільний інтернет у вашій мережі.
 
 ### 🐧 Легка та безпечна основа
-Фінальний образ Docker базується на мінімалістичній операційній системі `debian:bullseye-slim`. Служба запускається від імені звичайного користувача (`UID 10001`), з доданим параметром `--no-permcheck` для безпечного запуску в ізольованому середовищі Docker. За замовчуванням встановлено київський час (`Europe/Kyiv`).
+Фінальний образ Docker базується на мінімалістичній операційній системі `debian:bookworm-slim`. Служба запускається від імені звичайного користувача (`UID 10001`), з доданим параметром `--no-permcheck` для безпечного запуску в ізольованому середовищі Docker. За замовчуванням встановлено київський час (`Europe/Kyiv`).
 
 ---
 
@@ -202,7 +202,7 @@ description: Жорстко захищений, нуль-телеметричн�
 applicationCategory: NetworkSecurity
 applicationSubCategory: DNSFiltering
 operatingSystem: Linux
-softwareVersion: 1.0.7
+softwareVersion: 1.0.8
 keywords: dns-сервер, adblock, приватність, self-hosted, dns-over-https, dns-over-tls, dns-over-quic, dnscrypt, adguard-home, golang, docker, homelab, мережева-безпека, dns-фільтр
 author: Weby Homelab (https://github.com/weby-homelab)
 codeRepository: https://github.com/weby-homelab/ADBlock-PD

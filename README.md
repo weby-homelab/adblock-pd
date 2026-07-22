@@ -45,7 +45,7 @@
 </p>
 
 ## 🎯 What is this?
-**ADBlock-Private-DNS (ADBlock-PD)** is a fork of the popular AdGuard Home DNS server (based on v0.107.77). Created by **Weby Homelab**, the sole purpose of this project is to **completely sever all ties with AdGuard's infrastructure (and any other external entity)**. We took a powerful filtering engine and fully "sanitized" it.
+**ADBlock-Private-DNS (ADBlock-PD)** is a fork of the popular AdGuard Home DNS server (based on v0.107.78). Created by **Weby Homelab**, the sole purpose of this project is to **completely sever all ties with AdGuard's infrastructure (and any other external entity)**. We took a powerful filtering engine and fully "sanitized" it.
 
 Your DNS server should belong exclusively to you. No telemetry, no hidden requests, and no downloading of third-party code without your explicit consent.
 
@@ -70,7 +70,7 @@ flowchart TD
         C3("📺 Smart TV / IoT"):::client
     end
 
-    subgraph Docker ["🐳 Docker Environment (debian:bullseye-slim)"]
+    subgraph Docker ["🐳 Docker Environment (debian:bookworm-slim)"]
         direction TB
         
         subgraph ADBlock_PD ["🛡️ ADBlock-Private-DNS Core"]
@@ -139,7 +139,7 @@ All links in the web interface (React) that led to AdGuard trackers, analytics, 
 The container is equipped with a built-in `HEALTHCHECK` based on the `host` utility. Every 30 seconds, the system verifies the vitality of the DNS resolver (`127.0.0.1:53`). If the service hangs, Docker will automatically restart it, guaranteeing a stable internet connection in your network.
 
 ### 🐧 Lightweight & Secure Base
-The final Docker image is based on `debian:bullseye-slim`. The service runs as an unprivileged user (`UID 10001`), utilizing the `--no-permcheck` flag for a secure startup in an isolated Docker environment. The default timezone is set to `Europe/Kyiv`.
+The final Docker image is based on `debian:bookworm-slim`. The service runs as an unprivileged user (`UID 10001`), utilizing the `--no-permcheck` flag for a secure startup in an isolated Docker environment. The default timezone is set to `Europe/Kyiv`.
 
 ---
 
@@ -201,7 +201,7 @@ description: A heavily hardened, zero-telemetry fork of AdGuard Home DNS server 
 applicationCategory: NetworkSecurity
 applicationSubCategory: DNSFiltering
 operatingSystem: Linux
-softwareVersion: 1.0.7
+softwareVersion: 1.0.8
 keywords: dns-server, adblock, privacy, self-hosted, dns-over-https, dns-over-tls, dns-over-quic, dnscrypt, adguard-home, golang, docker, homelab, network-security, dns-filter, pi-hole-alternative
 author: Weby Homelab (https://github.com/weby-homelab)
 codeRepository: https://github.com/weby-homelab/ADBlock-PD
