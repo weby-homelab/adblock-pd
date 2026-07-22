@@ -23,10 +23,6 @@ import (
 	"github.com/AdguardTeam/golibs/osutil/executil"
 	"github.com/NYTimes/gziphandler"
 	"github.com/quic-go/quic-go/http3"
-	"golang.org/x/net/http2"
-
-	//lint:ignore SA1019 See AGDNS-4038.
-	"golang.org/x/net/http2/h2c"
 )
 
 // TODO(a.garipov): Make configurable.
@@ -275,13 +271,7 @@ func (web *webAPI) start(ctx context.Context) {
 
 		hdlr = web.auth.middleware().Wrap(hdlr)
 
-		// Use an h2c handler to support unencrypted HTTP/2, e.g. for proxies.
-		//
-		// NOTE:  The auth middleware must be inside the h2c handler to ensure
-		// it applies to upgraded HTTP/2 connections as well.  See AG-51779.
-		//
-		//lint:ignore SA1019 See AGDNS-4038.
-		hdlr = h2c.NewHandler(hdlr, &http2.Server{})
+		// H2C connection upgrade disabled per RFC 9113 to prevent auth bypass vulnerabilities.
 
 		// Create a new instance, because the Web is not usable after Shutdown.
 		web.httpServer = &http.Server{

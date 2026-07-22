@@ -11,7 +11,6 @@ import (
 	"net/url"
 	"slices"
 	"testing"
-	"time"
 
 	"github.com/weby-homelab/adblock-pd/internal/client"
 	"github.com/weby-homelab/adblock-pd/internal/filtering"
@@ -22,8 +21,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// testTimeout is the common timeout for tests and contexts.
-const testTimeout = 1 * time.Second
 
 const (
 	testClientIP1 = "1.1.1.1"
