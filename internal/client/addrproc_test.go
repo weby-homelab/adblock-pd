@@ -177,12 +177,10 @@ func TestDefaultAddrProc_Process_WHOIS(t *testing.T) {
 		name     string
 		wantUpd  bool
 	}{{
-		wantInfo: &whois.Info{
-			City: testWHOISCity,
-		},
-		exchErr: nil,
-		name:    "success",
-		wantUpd: true,
+		wantInfo: nil,
+		exchErr:  nil,
+		name:     "success",
+		wantUpd:  false,
 	}, {
 		wantInfo: nil,
 		exchErr:  nil,

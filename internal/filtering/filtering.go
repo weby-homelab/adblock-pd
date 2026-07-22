@@ -19,6 +19,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/c2h5oh/datasize"
 	"github.com/weby-homelab/adblock-pd/internal/agh"
 	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
 	"github.com/weby-homelab/adblock-pd/internal/aghos"
@@ -186,6 +187,9 @@ type Config struct {
 
 	// ProtectionEnabled defines whether or not use any of filtering features.
 	ProtectionEnabled bool `yaml:"protection_enabled"`
+
+	// MaxHTTPSize is the maximum size of the HTTP request for rulelists.
+	MaxHTTPSize datasize.ByteSize `yaml:"max_http_size"`
 }
 
 // BlockingMode is an enum of all allowed blocking modes.
