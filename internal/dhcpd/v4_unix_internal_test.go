@@ -10,14 +10,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/weby-homelab/adblock-pd/internal/aghnet"
-	"github.com/weby-homelab/adblock-pd/internal/dhcpsvc"
 	"github.com/AdguardTeam/golibs/netutil"
 	"github.com/AdguardTeam/golibs/stringutil"
 	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/insomniacslk/dhcp/dhcpv4"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/weby-homelab/adblock-pd/internal/aghnet"
+	"github.com/weby-homelab/adblock-pd/internal/dhcpsvc"
 )
 
 var (
@@ -282,6 +282,24 @@ func TestV4Server_AddRemove_static(t *testing.T) {
 		ls = s.GetLeases(LeasesStatic)
 		require.Emptyf(t, ls, "after %s", tc.name)
 	}
+}
+
+func TestV4Server_UpdateStaticLease_withoutHostname(t *testing.T) {
+	s := defaultSrv(t)
+
+	lease := &dhcpsvc.Lease{
+		Hostname: "static.local",
+		HWAddr:   net.HardwareAddr{0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA},
+		IP:       netip.MustParseAddr("192.168.10.150"),
+	}
+	require.NoError(t, s.AddStaticLease(lease))
+
+	lease.Hostname = ""
+	require.NoError(t, s.UpdateStaticLease(lease))
+
+	got := s.GetLeases(LeasesStatic)
+	require.Len(t, got, 1)
+	assert.Empty(t, got[0].Hostname)
 }
 
 func TestV4_AddReplace(t *testing.T) {

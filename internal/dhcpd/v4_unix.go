@@ -13,14 +13,14 @@ import (
 	"sync"
 	"time"
 
-	"github.com/weby-homelab/adblock-pd/internal/aghnet"
-	"github.com/weby-homelab/adblock-pd/internal/dhcpsvc"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/netutil"
 	"github.com/AdguardTeam/golibs/timeutil"
 	"github.com/insomniacslk/dhcp/dhcpv4"
 	"github.com/insomniacslk/dhcp/dhcpv4/server4"
+	"github.com/weby-homelab/adblock-pd/internal/aghnet"
+	"github.com/weby-homelab/adblock-pd/internal/dhcpsvc"
 
 	//lint:ignore SA1019 See the TODO in go.mod.
 	"github.com/go-ping/ping"
@@ -485,17 +485,19 @@ func (s *v4Server) validateStaticLease(l *dhcpsvc.Lease) (err error) {
 		return err
 	}
 
-	err = netutil.ValidateHostname(hostname)
-	if err != nil {
-		return fmt.Errorf("validating hostname: %w", err)
+	if hostname != "" {
+		err = netutil.ValidateHostname(hostname)
+		if err != nil {
+			return fmt.Errorf("validating hostname: %w", err)
+		}
+
+		dup, ok := s.hostsIndex[hostname]
+		if ok && !bytes.Equal(dup.HWAddr, l.HWAddr) {
+			return ErrDupHostname
+		}
 	}
 
-	dup, ok := s.hostsIndex[hostname]
-	if ok && !bytes.Equal(dup.HWAddr, l.HWAddr) {
-		return ErrDupHostname
-	}
-
-	dup, ok = s.ipIndex[l.IP]
+	dup, ok := s.ipIndex[l.IP]
 	if ok && !bytes.Equal(dup.HWAddr, l.HWAddr) {
 		return ErrDupIP
 	}

@@ -12,6 +12,13 @@ import (
 	"sync"
 	"time"
 
+	"github.com/AdguardTeam/dnsproxy/fastip"
+	"github.com/AdguardTeam/golibs/errors"
+	"github.com/AdguardTeam/golibs/logutil/slogutil"
+	"github.com/AdguardTeam/golibs/netutil"
+	"github.com/AdguardTeam/golibs/timeutil"
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/renameio/v2/maybe"
 	"github.com/weby-homelab/adblock-pd/internal/agh"
 	"github.com/weby-homelab/adblock-pd/internal/aghalg"
 	"github.com/weby-homelab/adblock-pd/internal/aghos"
@@ -20,16 +27,10 @@ import (
 	"github.com/weby-homelab/adblock-pd/internal/dhcpd"
 	"github.com/weby-homelab/adblock-pd/internal/dnsforward"
 	"github.com/weby-homelab/adblock-pd/internal/filtering"
+	"github.com/weby-homelab/adblock-pd/internal/filtering/rulelist"
 	"github.com/weby-homelab/adblock-pd/internal/querylog"
 	"github.com/weby-homelab/adblock-pd/internal/schedule"
 	"github.com/weby-homelab/adblock-pd/internal/stats"
-	"github.com/AdguardTeam/dnsproxy/fastip"
-	"github.com/AdguardTeam/golibs/errors"
-	"github.com/AdguardTeam/golibs/logutil/slogutil"
-	"github.com/AdguardTeam/golibs/netutil"
-	"github.com/AdguardTeam/golibs/timeutil"
-	"github.com/google/go-cmp/cmp"
-	"github.com/google/renameio/v2/maybe"
 	yaml "go.yaml.in/yaml/v4"
 )
 
@@ -326,7 +327,7 @@ type tlsConfigSettings struct {
 	// if PortDNSCrypt is not zero.
 	//
 	// See https://github.com/AdguardTeam/dnsproxy and
-	// https://github.com/ameshkov/dnscrypt.
+	// https://github.com/AdguardTeam/dnscrypt.
 	DNSCryptConfigFile string `yaml:"dnscrypt_config_file" json:"dnscrypt_config_file"`
 
 	// CertificateChain is the PEM-encoded certificate chain.  Must be empty if
@@ -558,6 +559,7 @@ var config = &configuration{
 
 		FilteringEnabled:           true,
 		FiltersUpdateIntervalHours: 24,
+		MaxHTTPSize:                rulelist.DefaultMaxRuleListSize,
 
 		RewritesEnabled: true,
 

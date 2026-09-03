@@ -10,12 +10,12 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/weby-homelab/adblock-pd/internal/aghalg"
-	"github.com/weby-homelab/adblock-pd/internal/aghtest"
-	"github.com/weby-homelab/adblock-pd/internal/filtering"
 	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/weby-homelab/adblock-pd/internal/aghalg"
+	"github.com/weby-homelab/adblock-pd/internal/aghtest"
+	"github.com/weby-homelab/adblock-pd/internal/filtering"
 )
 
 // TODO(d.kolyshev): Use [rewrite.Item] instead.
@@ -62,6 +62,7 @@ func TestDNSFilter_HandleRewriteHTTP(t *testing.T) {
 		disabledAnswer = "disabled.rewrite"
 		addDomain      = "add.local"
 		addAnswer      = "add.rewrite"
+		invalidAnswer  = "invalid_domain"
 		updDomain      = "upd.local"
 		updAnswer      = "upd.rewrite"
 		invDomain      = "inv.local"
@@ -148,6 +149,21 @@ func TestDNSFilter_HandleRewriteHTTP(t *testing.T) {
 		wantStatus:  http.StatusBadRequest,
 		wantBody:    decodeErrorMsg,
 		wantList:    testRewrites,
+	}, {
+		name:   "add_error_invalid_cname",
+		url:    addURL,
+		method: http.MethodPost,
+		reqData: rewriteJSON{
+			Domain:  addDomain,
+			Answer:  invalidAnswer,
+			Enabled: aghalg.NBTrue,
+		},
+		wantConfMod: false,
+		wantStatus:  http.StatusBadRequest,
+		wantBody: "normalizing: invalid CNAME target \"invalid_domain\": " +
+			"bad domain name \"invalid_domain\": bad top-level domain name " +
+			"label \"invalid_domain\": bad top-level domain name label rune '_'\n",
+		wantList: testRewrites,
 	}, {
 		name:        "delete",
 		url:         deleteURL,

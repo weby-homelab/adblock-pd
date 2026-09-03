@@ -1,6 +1,7 @@
 package filtering
 
 import (
+	"bytes"
 	"context"
 	"net"
 	"net/http"
@@ -134,6 +135,36 @@ func TestDNSFilter_Update(t *testing.T) {
 
 		f.unload()
 	})
+}
+
+func TestDNSFilter_Update_maxHTTPSize(t *testing.T) {
+	const (
+		maxSize   = 32
+		rule      = "||example.org^\n"
+		ruleCount = 20
+	)
+
+	content := bytes.Repeat([]byte(rule), ruleCount)
+	dnsFilter, err := New(&Config{
+		Logger:  testLogger,
+		DataDir: t.TempDir(),
+		HTTPClient: &http.Client{
+			Timeout: testTimeout,
+		},
+		MaxHTTPSize: maxSize,
+	}, nil)
+	require.NoError(t, err)
+	t.Cleanup(dnsFilter.Close)
+
+	f := &FilterYAML{
+		URL:  serveFiltersLocally(t, content),
+		Name: "limited",
+	}
+
+	updated, err := dnsFilter.update(f)
+	assert.False(t, updated)
+	assert.ErrorContains(t, err, "cannot read more than 32 bytes")
+	assert.Zero(t, f.RulesCount)
 }
 
 func TestFilterYAML_EnsureName(t *testing.T) {

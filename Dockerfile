@@ -9,7 +9,7 @@ RUN npm run build-prod
 
 # Stage 2: Build the backend
 FROM golang:1.24-bullseye AS backend-builder
-ENV GOTOOLCHAIN=go1.26.5
+ENV GOTOOLCHAIN=go1.26.6
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
@@ -54,5 +54,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD host -W 2 google.com 127.0.0.1 || exit 1
 
 ENTRYPOINT ["./ADBlock-PD", "--work-dir", "/opt/adblock-pd/data", "--config", "/opt/adblock-pd/conf/ADBlock-PD.yaml", "--no-permcheck"]
-
 

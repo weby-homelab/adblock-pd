@@ -17,11 +17,6 @@ import (
 	"testing/fstest"
 	"time"
 
-	"github.com/weby-homelab/adblock-pd/internal/agh"
-	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
-	"github.com/weby-homelab/adblock-pd/internal/aghnet"
-	"github.com/weby-homelab/adblock-pd/internal/aghtest"
-	"github.com/weby-homelab/adblock-pd/internal/filtering"
 	"github.com/AdguardTeam/dnsproxy/upstream"
 	"github.com/AdguardTeam/golibs/httphdr"
 	"github.com/AdguardTeam/golibs/netutil"
@@ -29,6 +24,11 @@ import (
 	"github.com/miekg/dns"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/weby-homelab/adblock-pd/internal/agh"
+	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
+	"github.com/weby-homelab/adblock-pd/internal/aghnet"
+	"github.com/weby-homelab/adblock-pd/internal/aghtest"
+	"github.com/weby-homelab/adblock-pd/internal/filtering"
 )
 
 // TODO(e.burkov):  Use the better approach to testdata with a separate
@@ -316,6 +316,13 @@ func TestDNSForwardHTTP_handleSetConfig(t *testing.T) {
 			w.Body.Reset()
 		})
 	}
+}
+
+func TestJSONDNSConfig_checkBootstrap_ignoresComments(t *testing.T) {
+	bootstraps := []string{"# comment", "", "127.0.0.1"}
+	req := &jsonDNSConfig{Bootstraps: &bootstraps}
+
+	require.NoError(t, req.checkBootstrap())
 }
 
 // newLocalUpstreamListener creates a local upstream listener and returns its

@@ -13,12 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/weby-homelab/adblock-pd/internal/agh"
-	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
-	"github.com/weby-homelab/adblock-pd/internal/aghnet"
-	"github.com/weby-homelab/adblock-pd/internal/aghslog"
-	"github.com/weby-homelab/adblock-pd/internal/aghtls"
-	"github.com/weby-homelab/adblock-pd/internal/client"
+	"github.com/AdguardTeam/dnscrypt"
 	"github.com/AdguardTeam/dnsproxy/proxy"
 	"github.com/AdguardTeam/dnsproxy/ratelimit"
 	"github.com/AdguardTeam/dnsproxy/upstream"
@@ -29,7 +24,12 @@ import (
 	"github.com/AdguardTeam/golibs/stringutil"
 	"github.com/AdguardTeam/golibs/timeutil"
 	"github.com/AdguardTeam/golibs/validate"
-	"github.com/ameshkov/dnscrypt/v2"
+	"github.com/weby-homelab/adblock-pd/internal/agh"
+	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
+	"github.com/weby-homelab/adblock-pd/internal/aghnet"
+	"github.com/weby-homelab/adblock-pd/internal/aghslog"
+	"github.com/weby-homelab/adblock-pd/internal/aghtls"
+	"github.com/weby-homelab/adblock-pd/internal/client"
 )
 
 // Config represents the DNS filtering configuration of AdGuard Home.  The zero
@@ -221,7 +221,7 @@ type TLSConfig struct {
 type DNSCryptConfig struct {
 	// ResolverCert is the certificate used for DNSCrypt connections.  It is not
 	// nil if there is at least one UDP or TCP address present.
-	ResolverCert *dnscrypt.Cert
+	ResolverCert *dnscrypt.Certificate
 
 	// UDPListenAddrs are the addresses to listen on for DNSCrypt UDP
 	// connections.

@@ -14,12 +14,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
-	"github.com/weby-homelab/adblock-pd/internal/filtering/rulelist"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/netutil/urlutil"
 	"github.com/miekg/dns"
+	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
+	"github.com/weby-homelab/adblock-pd/internal/filtering/rulelist"
 )
 
 // validateFilterURL validates the filter list URL or file name.
@@ -763,7 +763,10 @@ func (d *DNSFilter) RegisterFilteringHandlers() {
 	registerHTTP(http.MethodGet, "/control/filtering/check_host", d.handleCheckHost)
 }
 
+// maxUpdateIvlHours is the maximum allowed filter update interval in hours.
+const maxUpdateIvlHours = 365 * 24
+
 // ValidateUpdateIvl returns false if i is not a valid filters update interval.
-func ValidateUpdateIvl(i uint32) bool {
-	return i == 0 || i == 1 || i == 12 || i == 1*24 || i == 3*24 || i == 7*24
+func ValidateUpdateIvl(i uint32) (ok bool) {
+	return i <= maxUpdateIvlHours
 }

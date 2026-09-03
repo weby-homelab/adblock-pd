@@ -12,13 +12,29 @@ import (
 	"testing"
 	"time"
 
-	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
-	"github.com/weby-homelab/adblock-pd/internal/aghtest"
-	"github.com/weby-homelab/adblock-pd/internal/schedule"
 	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
+	"github.com/weby-homelab/adblock-pd/internal/aghtest"
+	"github.com/weby-homelab/adblock-pd/internal/schedule"
 )
+
+func TestValidateUpdateIvl(t *testing.T) {
+	for _, tc := range []struct {
+		interval uint32
+		valid    bool
+	}{
+		{interval: 0, valid: true},
+		{interval: 1, valid: true},
+		{interval: 365 * 24, valid: true},
+		{interval: 365*24 + 1, valid: false},
+	} {
+		t.Run(fmt.Sprintf("%d", tc.interval), func(t *testing.T) {
+			assert.Equal(t, tc.valid, ValidateUpdateIvl(tc.interval))
+		})
+	}
+}
 
 func TestDNSFilter_handleFilteringSetURL(t *testing.T) {
 	filtersDir := t.TempDir()

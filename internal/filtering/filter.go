@@ -15,12 +15,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/AdguardTeam/golibs/container"
+	"github.com/AdguardTeam/golibs/errors"
+	"github.com/AdguardTeam/golibs/ioutil"
+	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/weby-homelab/adblock-pd/internal/aghos"
 	"github.com/weby-homelab/adblock-pd/internal/aghrenameio"
 	"github.com/weby-homelab/adblock-pd/internal/filtering/rulelist"
-	"github.com/AdguardTeam/golibs/container"
-	"github.com/AdguardTeam/golibs/errors"
-	"github.com/AdguardTeam/golibs/logutil/slogutil"
 )
 
 // filterDir is the subdirectory of a data directory to store downloaded
@@ -519,7 +520,7 @@ func (d *DNSFilter) updateIntl(ctx context.Context, flt *FilterYAML) (ok bool, e
 	defer d.bufPool.Put(bufPtr)
 
 	p := rulelist.NewParser()
-	res, err = p.Parse(tmpFile, r, *bufPtr)
+	res, err = p.Parse(tmpFile, ioutil.LimitReader(r, d.conf.MaxHTTPSize.Bytes()), *bufPtr)
 
 	return res.Checksum != flt.checksum && err == nil, err
 }

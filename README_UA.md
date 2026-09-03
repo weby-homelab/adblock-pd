@@ -202,7 +202,7 @@ description: Жорстко захищений, нуль-телеметричн�
 applicationCategory: NetworkSecurity
 applicationSubCategory: DNSFiltering
 operatingSystem: Linux
-softwareVersion: 1.0.8
+softwareVersion: 1.0.9
 keywords: dns-сервер, adblock, приватність, self-hosted, dns-over-https, dns-over-tls, dns-over-quic, dnscrypt, adguard-home, golang, docker, homelab, мережева-безпека, dns-фільтр
 author: Weby Homelab (https://github.com/weby-homelab)
 codeRepository: https://github.com/weby-homelab/ADBlock-PD

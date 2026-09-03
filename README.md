@@ -45,7 +45,7 @@
 </p>
 
 ## 🎯 What is this?
-**ADBlock-Private-DNS (ADBlock-PD)** is a fork of the popular AdGuard Home DNS server (based on v0.107.78). Created by **Weby Homelab**, the sole purpose of this project is to **completely sever all ties with AdGuard's infrastructure (and any other external entity)**. We took a powerful filtering engine and fully "sanitized" it.
+**ADBlock-Private-DNS (ADBlock-PD)** is a fork of the popular AdGuard Home DNS server (based on v0.107.79). Created by **Weby Homelab**, the sole purpose of this project is to **completely sever all ties with AdGuard's infrastructure (and any other external entity)**. We took a powerful filtering engine and fully "sanitized" it.
 
 Your DNS server should belong exclusively to you. No telemetry, no hidden requests, and no downloading of third-party code without your explicit consent.
 
@@ -201,7 +201,7 @@ description: A heavily hardened, zero-telemetry fork of AdGuard Home DNS server 
 applicationCategory: NetworkSecurity
 applicationSubCategory: DNSFiltering
 operatingSystem: Linux
-softwareVersion: 1.0.8
+softwareVersion: 1.0.9
 keywords: dns-server, adblock, privacy, self-hosted, dns-over-https, dns-over-tls, dns-over-quic, dnscrypt, adguard-home, golang, docker, homelab, network-security, dns-filter, pi-hole-alternative
 author: Weby Homelab (https://github.com/weby-homelab)
 codeRepository: https://github.com/weby-homelab/ADBlock-PD
