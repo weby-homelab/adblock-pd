@@ -12,10 +12,6 @@ import (
 	"slices"
 	"time"
 
-	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
-	"github.com/weby-homelab/adblock-pd/internal/aghnet"
-	"github.com/weby-homelab/adblock-pd/internal/aghslog"
-	"github.com/weby-homelab/adblock-pd/internal/filtering"
 	"github.com/AdguardTeam/dnsproxy/proxy"
 	"github.com/AdguardTeam/dnsproxy/upstream"
 	"github.com/AdguardTeam/golibs/errors"
@@ -23,6 +19,10 @@ import (
 	"github.com/AdguardTeam/golibs/netutil"
 	"github.com/AdguardTeam/golibs/stringutil"
 	"github.com/AdguardTeam/golibs/validate"
+	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
+	"github.com/weby-homelab/adblock-pd/internal/aghnet"
+	"github.com/weby-homelab/adblock-pd/internal/aghslog"
+	"github.com/weby-homelab/adblock-pd/internal/filtering"
 )
 
 // jsonDNSConfig is the JSON representation of the DNS server configuration.
@@ -342,8 +342,8 @@ func (req *jsonDNSConfig) checkBootstrap() (err error) {
 	defer func() { err = errors.Annotate(err, "checking bootstrap %s: %w", b) }()
 
 	for _, b = range *req.Bootstraps {
-		if b == "" {
-			return errors.Error("empty")
+		if aghnet.IsCommentOrEmpty(b) {
+			continue
 		}
 
 		var resolver *upstream.UpstreamResolver
@@ -728,8 +728,6 @@ func (s *Server) handleTestUpstreamDNS(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
-
-	req.BootstrapDNS = stringutil.FilterOut(req.BootstrapDNS, aghnet.IsCommentOrEmpty)
 
 	opts := &upstream.Options{
 		Logger:     aghslog.NewForUpstream(s.baseLogger, aghslog.UpstreamTypeTest),

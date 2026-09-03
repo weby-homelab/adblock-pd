@@ -6,17 +6,21 @@ import { getVersion } from '../../actions';
 import './Version.css';
 import { RootState } from '../../initialState';
 
+const packageVersion = process.env.APP_VERSION || '';
+
 const Version = () => {
     const dispatch = useDispatch();
     const { t } = useTranslation();
     const dashboard = useSelector((state: RootState) => state.dashboard, shallowEqual);
     const install = useSelector((state: RootState) => state.install, shallowEqual);
 
-    if (!dashboard && !install) {
+    const rawVersion = dashboard?.dnsVersion || install?.dnsVersion || packageVersion;
+
+    if (!rawVersion) {
         return null;
     }
 
-    const version = dashboard?.dnsVersion || install?.dnsVersion;
+    const version = rawVersion.startsWith('v') ? rawVersion : `v${rawVersion}`;
 
     const onClick = () => {
         dispatch(getVersion(true));

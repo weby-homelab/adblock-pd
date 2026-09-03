@@ -14,6 +14,19 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestNewBootstrap_ignoresComments(t *testing.T) {
+	r, boots, err := newBootstrap([]string{"# comment", "", "127.0.0.1"}, nil, &upstream.Options{
+		Logger: testLogger,
+	})
+	require.NoError(t, err)
+	require.NotNil(t, r)
+	require.Len(t, boots, 1)
+
+	for _, boot := range boots {
+		require.NoError(t, boot.Close())
+	}
+}
+
 func TestUpstreamConfigValidator(t *testing.T) {
 	pt := testutil.NewPanicT(t)
 

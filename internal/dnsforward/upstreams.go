@@ -7,11 +7,11 @@ import (
 	"slices"
 	"time"
 
-	"github.com/weby-homelab/adblock-pd/internal/aghnet"
 	"github.com/AdguardTeam/dnsproxy/proxy"
 	"github.com/AdguardTeam/dnsproxy/upstream"
 	"github.com/AdguardTeam/golibs/netutil"
 	"github.com/AdguardTeam/golibs/stringutil"
+	"github.com/weby-homelab/adblock-pd/internal/aghnet"
 )
 
 // newBootstrap returns a bootstrap resolver based on the configuration of s.
@@ -29,6 +29,8 @@ func newBootstrap(
 	etcHosts upstream.Resolver,
 	opts *upstream.Options,
 ) (r upstream.Resolver, boots []*upstream.UpstreamResolver, err error) {
+	addrs = stringutil.FilterOut(addrs, aghnet.IsCommentOrEmpty)
+
 	if len(addrs) == 0 {
 		addrs = defaultBootstrap
 	}

@@ -19,11 +19,6 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/c2h5oh/datasize"
-	"github.com/weby-homelab/adblock-pd/internal/agh"
-	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
-	"github.com/weby-homelab/adblock-pd/internal/aghos"
-	"github.com/weby-homelab/adblock-pd/internal/filtering/rulelist"
 	"github.com/AdguardTeam/golibs/container"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/hostsfile"
@@ -33,7 +28,12 @@ import (
 	"github.com/AdguardTeam/urlfilter"
 	"github.com/AdguardTeam/urlfilter/filterlist"
 	"github.com/AdguardTeam/urlfilter/rules"
+	"github.com/c2h5oh/datasize"
 	"github.com/miekg/dns"
+	"github.com/weby-homelab/adblock-pd/internal/agh"
+	"github.com/weby-homelab/adblock-pd/internal/aghhttp"
+	"github.com/weby-homelab/adblock-pd/internal/aghos"
+	"github.com/weby-homelab/adblock-pd/internal/filtering/rulelist"
 )
 
 // ServiceEntry - blocked service array element
@@ -188,7 +188,7 @@ type Config struct {
 	// ProtectionEnabled defines whether or not use any of filtering features.
 	ProtectionEnabled bool `yaml:"protection_enabled"`
 
-	// MaxHTTPSize is the maximum size of the HTTP request for rulelists.
+	// MaxHTTPSize is the maximum size of the HTTP body for rulelists.
 	MaxHTTPSize datasize.ByteSize `yaml:"max_http_size"`
 }
 
@@ -970,6 +970,9 @@ func InitModule(ctx context.Context, l *slog.Logger) {
 // be non-nil.
 func New(c *Config, blockFilters []Filter) (d *DNSFilter, err error) {
 	ctx := context.TODO()
+	if c.MaxHTTPSize == 0 {
+		c.MaxHTTPSize = rulelist.DefaultMaxRuleListSize
+	}
 
 	d = &DNSFilter{
 		logger: c.Logger,
